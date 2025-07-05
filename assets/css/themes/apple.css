@@ -796,66 +796,7 @@ kbd:hover {
     }
 }
 
-/* ===== 演讲者模式样式 ===== */
-.speaker-mode {
-    background: var(--background-color);
-}
 
-.speaker-mode .main-content {
-    margin-left: 0;
-    padding: 2rem;
-}
-
-.speaker-notes {
-    background: var(--card-background);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
-    backdrop-filter: var(--backdrop-blur);
-    -webkit-backdrop-filter: var(--backdrop-blur);
-}
-
-.notes-header {
-    background: var(--surface-color);
-    border-bottom: 1px solid var(--border-color);
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-}
-
-.notes-header h3 {
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.notes-header button {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    padding: 0.5rem;
-    transition: all 0.2s var(--ease-out);
-}
-
-.notes-header button:hover {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-.notes-content {
-    color: var(--text-primary);
-    line-height: 1.6;
-    font-size: 0.9rem;
-}
-
-.notes-footer {
-    background: var(--surface-color);
-    border-top: 1px solid var(--border-color);
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    font-weight: 500;
-}
 
 /* ===== 黑屏覆盖层样式 ===== */
 .blackout-overlay {

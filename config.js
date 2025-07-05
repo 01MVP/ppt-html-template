@@ -16,43 +16,51 @@ const PPTConfig = {
     // 当前主题 (apple, minimal, brutalist)
     theme: "apple",
     
-    // 幻灯片信息
+    // 幻灯片文件夹配置
+    slideFiles: {
+        // slides文件夹路径
+        basePath: "slides/",
+        
+        // 自动检测slides文件夹下的html文件
+        autoDetect: true,
+        
+        // 文件排序方式：'name' | 'date' | 'custom'
+        sortBy: 'name',
+        
+        // 幻灯片文件列表（按顺序加载）
+        files: [
+            '01-welcome.html',
+            '02-features.html', 
+            '03-how-to-use.html'
+        ],
+        
+        // 幻灯片标题提取方式
+        titleExtraction: {
+            // 从文件名提取标题
+            fromFilename: true,
+            // 从HTML内容中的第一个h1/h2标签提取
+            fromContent: true,
+            // 默认标题前缀
+            defaultPrefix: "幻灯片"
+        }
+    },
+    
+    // 幻灯片信息 (动态加载，这里作为默认结构)
     slides: [
         {
             id: "welcome",
-            title: "欢迎使用",
-            layout: "cover",
-            notes: "欢迎使用HTML PPT模板，这是一个纯HTML实现的演示文稿框架"
+            title: "HTML PPT 模板",
+            layout: "cover"
         },
         {
             id: "features",
-            title: "功能介绍",
-            layout: "content",
-            notes: "介绍模板的主要功能特性"
+            title: "强大功能",
+            layout: "content"
         },
         {
-            id: "tutorial",
-            title: "使用教程",
-            layout: "content",
-            notes: "详细的使用步骤说明"
-        },
-        {
-            id: "ai-prompts",
-            title: "AI 提示词",
-            layout: "content",
-            notes: "展示不同主题的AI提示词模板"
-        },
-        {
-            id: "themes",
-            title: "主题展示",
-            layout: "content",
-            notes: "展示三种不同的主题风格"
-        },
-        {
-            id: "start",
-            title: "开始创建",
-            layout: "content",
-            notes: "引导用户开始创建自己的PPT"
+            id: "how-to-use",
+            title: "快速上手",
+            layout: "content"
         }
     ],
     
@@ -146,8 +154,7 @@ const PPTConfig = {
         // 帮助
         help: ['KeyH', 'F1'],
         
-        // 演讲者模式
-        speaker: ['KeyS'],
+
         
         // 切换主题
         theme: ['KeyT'],

@@ -19,8 +19,17 @@ class KeyboardController {
     }
 
     bindKeyboardEvents() {
-        document.addEventListener('keydown', (e) => this.handleKeyDown(e));
-        document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+        document.addEventListener('keydown', (e) => this.handleKeyDown(e), true);
+        document.addEventListener('keyup', (e) => this.handleKeyUp(e), true);
+        
+        // 确保焦点在主文档上，防止iframe捕获键盘事件
+        document.addEventListener('click', () => {
+            document.body.focus();
+        });
+        
+        // 初始设置焦点
+        document.body.tabIndex = -1;
+        document.body.focus();
     }
 
     handleKeyDown(event) {
@@ -103,19 +112,10 @@ class KeyboardController {
             return;
         }
 
-        // 演讲者模式
-        if (this.shortcuts.speaker.includes(key)) {
-            this.toggleSpeakerMode();
-            this.showKeyboardFeedback('演讲者模式');
-            return;
-        }
 
-        // 主题切换
-        if (this.shortcuts.theme.includes(key)) {
-            toggleTheme();
-            this.showKeyboardFeedback('切换主题');
-            return;
-        }
+
+        // 功能面板 - 不再支持主题切换
+        // 主题切换功能已移除
 
         // 黑屏/白屏
         if (this.shortcuts.blackout.includes(key)) {
@@ -137,6 +137,14 @@ class KeyboardController {
         // Ctrl/Cmd + 组合键
         if (event.ctrlKey || event.metaKey) {
             this.handleCtrlShortcuts(key, event);
+            return;
+        }
+        
+        // 功能面板快捷键
+        if ((event.ctrlKey || event.metaKey) && keyName === '/') {
+            event.preventDefault();
+            this.showFunctionPanel();
+            this.showKeyboardFeedback('功能面板');
             return;
         }
 
@@ -197,13 +205,40 @@ class KeyboardController {
         switch (key) {
             case 'KeyT':
                 event.preventDefault();
-                toggleTheme();
-                this.showKeyboardFeedback('切换主题');
+                this.showPresentationTimer();
+                this.showKeyboardFeedback('演示计时器');
+                break;
+            case 'KeyO':
+                event.preventDefault();
+                toggleSidebar();
+                this.showKeyboardFeedback('切换侧边栏');
+                break;
+            case 'KeyL':
+                event.preventDefault();
+                this.showLayoutTemplates();
+                this.showKeyboardFeedback('布局模板');
                 break;
             case 'KeyM':
                 event.preventDefault();
                 toggleSidebar();
                 this.showKeyboardFeedback('切换菜单');
+                break;
+            case 'Tab':
+                event.preventDefault();
+                toggleSidebar();
+                this.showKeyboardFeedback('切换侧边栏');
+                break;
+            case 'KeyU':
+                event.preventDefault();
+                toggleSidebar();
+                this.showKeyboardFeedback('切换侧边栏');
+                break;
+            case 'KeyI':
+                event.preventDefault();
+                if (typeof showPresentationTimer === 'function') {
+                    showPresentationTimer();
+                    this.showKeyboardFeedback('演示计时器');
+                }
                 break;
         }
     }
@@ -301,42 +336,7 @@ class KeyboardController {
         this.hideSpeakerNotes();
     }
 
-    showSpeakerNotes() {
-        const currentSlide = PPTState.slides[PPTState.currentSlide];
-        if (!currentSlide || !currentSlide.notes) return;
 
-        let notesPanel = document.getElementById('speaker-notes');
-        if (!notesPanel) {
-            notesPanel = document.createElement('div');
-            notesPanel.id = 'speaker-notes';
-            notesPanel.className = 'speaker-notes';
-            document.body.appendChild(notesPanel);
-        }
-
-        notesPanel.innerHTML = `
-            <div class="notes-header">
-                <h3>演讲者备注</h3>
-                <button onclick="keyboardController.exitSpeakerMode()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="notes-content">
-                <p>${currentSlide.notes}</p>
-            </div>
-            <div class="notes-footer">
-                <span>第 ${PPTState.currentSlide + 1} 张 / 共 ${PPTState.totalSlides} 张</span>
-            </div>
-        `;
-
-        notesPanel.style.display = 'block';
-    }
-
-    hideSpeakerNotes() {
-        const notesPanel = document.getElementById('speaker-notes');
-        if (notesPanel) {
-            notesPanel.style.display = 'none';
-        }
-    }
 
     // 黑屏/白屏功能
     toggleBlackout() {
@@ -547,6 +547,33 @@ class KeyboardController {
     updateShortcuts(newShortcuts) {
         this.shortcuts = { ...this.shortcuts, ...newShortcuts };
     }
+    
+    // 新增功能方法
+    showFunctionPanel() {
+        if (window.functionPanel) {
+            window.functionPanel.show();
+        } else if (window.showFunctionPanel) {
+            window.showFunctionPanel();
+        }
+    }
+    
+    showPresentationTimer() {
+        if (window.showPresentationTimer) {
+            window.showPresentationTimer();
+        }
+    }
+    
+    showSlideThumbnails() {
+        if (window.showSlideThumbnails) {
+            window.showSlideThumbnails();
+        }
+    }
+    
+    showLayoutTemplates() {
+        if (window.showLayoutTemplates) {
+            window.showLayoutTemplates();
+        }
+    }
 }
 
 // 添加键盘反馈样式
@@ -573,47 +600,7 @@ const keyboardFeedbackStyle = `
         transform: translateY(0);
     }
     
-    .speaker-notes {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-        background: var(--card-background);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        box-shadow: var(--shadow-lg);
-        display: none;
-        z-index: 1000;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-    
-    .notes-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px;
-        border-bottom: 1px solid var(--border-color);
-    }
-    
-    .notes-header h3 {
-        margin: 0;
-        font-size: 16px;
-        font-weight: 600;
-    }
-    
-    .notes-content {
-        padding: 16px;
-        line-height: 1.6;
-    }
-    
-    .notes-footer {
-        padding: 12px 16px;
-        background: var(--surface-color);
-        border-top: 1px solid var(--border-color);
-        font-size: 14px;
-        color: var(--text-secondary);
-    }
+
     
     .blackout-overlay {
         position: fixed;
@@ -676,11 +663,7 @@ const keyboardFeedbackStyle = `
             padding: 6px 12px;
         }
         
-        .speaker-notes {
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-        }
+
         
         .search-box {
             left: 10px;

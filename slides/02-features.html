@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML PPT 模板 - 功能特性</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out; }
+        .animate-slide-up { animation: slideUp 0.8s ease-out; }
+        .animate-scale-in { animation: scaleIn 0.6s ease-out; }
+        .progress-bar { animation: progressFill 2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes progressFill { from { width: 0; } to { width: 100%; } }
+    </style>
+</head>
+<body>
+
+<!-- 功能特性页面 - 现代化设计 -->
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <!-- 背景装饰 -->
+    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80')] bg-cover bg-center opacity-5"></div>
+    
+    <!-- 动态背景元素 -->
+    <div class="absolute top-10 left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse" style="animation-delay: 3s;"></div>
+    
+    <!-- 主要内容 -->
+    <div class="relative z-10 min-h-screen flex flex-col p-8">
+        <!-- 标题区域 -->
+        <div class="text-center mb-16 animate-fade-in">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mb-6 shadow-2xl">
+                <i class="fas fa-rocket text-white text-2xl"></i>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">
+                <span class="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
+                    强大功能
+                </span>
+            </h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                集成了现代Web技术的完整解决方案，让您的演示文稿更加专业和吸引人
+            </p>
+        </div>
+        
+        <!-- 核心功能展示 -->
+        <div class="flex-1 max-w-7xl mx-auto w-full">
+            <!-- 主要功能网格 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- AI 驱动创作 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 animate-scale-in">
+                    <div class="flex items-start space-x-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-magic text-white text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-white mb-3">AI 驱动创作</h3>
+                            <p class="text-gray-300 mb-4 leading-relaxed">
+                                支持 Cursor、Trae 等AI编辑器，通过智能prompt快速生成专业PPT内容，大幅提升创作效率
+                            </p>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-400">内容生成效率</span>
+                                    <span class="text-green-400 font-semibold">+400%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full progress-bar" style="width: 85%; animation-delay: 0.5s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 模块化设计 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 animate-scale-in" style="animation-delay: 0.2s;">
+                    <div class="flex items-start space-x-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-layer-group text-white text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-white mb-3">模块化设计</h3>
+                            <p class="text-gray-300 mb-4 leading-relaxed">
+                                每个幻灯片独立HTML文件，便于管理、编辑和版本控制，支持团队协作开发
+                            </p>
+                            <div class="grid grid-cols-3 gap-2 mt-4">
+                                <div class="bg-blue-500/20 rounded-lg p-2 text-center">
+                                    <i class="fas fa-file-code text-blue-400 text-sm"></i>
+                                    <p class="text-xs text-blue-300 mt-1">HTML</p>
+                                </div>
+                                <div class="bg-green-500/20 rounded-lg p-2 text-center">
+                                    <i class="fas fa-file-code text-green-400 text-sm"></i>
+                                    <p class="text-xs text-green-300 mt-1">CSS</p>
+                                </div>
+                                <div class="bg-yellow-500/20 rounded-lg p-2 text-center">
+                                    <i class="fas fa-file-code text-yellow-400 text-sm"></i>
+                                    <p class="text-xs text-yellow-300 mt-1">JS</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 美观界面 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 animate-scale-in" style="animation-delay: 0.4s;">
+                    <div class="flex items-start space-x-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-palette text-white text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-white mb-3">现代化界面</h3>
+                            <p class="text-gray-300 mb-4 leading-relaxed">
+                                基于shadcn/ui设计语言，集成Tailwind CSS和Font Awesome图标，呈现专业美观的视觉效果
+                            </p>
+                            <div class="flex items-center space-x-4 mt-4">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                                    <span class="text-sm text-gray-400">渐变色彩</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 bg-white/10 backdrop-blur-sm rounded-full border border-white/20"></div>
+                                    <span class="text-sm text-gray-400">毛玻璃效果</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 响应式布局 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 animate-scale-in" style="animation-delay: 0.6s;">
+                    <div class="flex items-start space-x-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-white mb-3">响应式布局</h3>
+                            <p class="text-gray-300 mb-4 leading-relaxed">
+                                完美适配各种设备，从桌面到移动端，确保在任何屏幕尺寸下都能提供最佳的展示效果
+                            </p>
+                            <div class="flex items-center space-x-4 mt-4">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-desktop text-blue-400"></i>
+                                    <span class="text-sm text-gray-400">桌面端</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-tablet text-green-400"></i>
+                                    <span class="text-sm text-gray-400">平板</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-mobile text-purple-400"></i>
+                                    <span class="text-sm text-gray-400">手机</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 技术亮点 -->
+            <div class="bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10 animate-slide-up" style="animation-delay: 0.8s;">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-4">技术亮点</h2>
+                    <p class="text-gray-300">采用最新的Web技术栈，确保性能和兼容性</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    <div class="text-center group">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <i class="fab fa-html5 text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-1">HTML5</h4>
+                        <p class="text-gray-400 text-sm">现代标准</p>
+                    </div>
+                    
+                    <div class="text-center group">
+                        <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <i class="fab fa-css3-alt text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-1">CSS3</h4>
+                        <p class="text-gray-400 text-sm">视觉效果</p>
+                    </div>
+                    
+                    <div class="text-center group">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <i class="fab fa-js text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-1">JavaScript</h4>
+                        <p class="text-gray-400 text-sm">交互功能</p>
+                    </div>
+                    
+                    <div class="text-center group">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-wind text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-1">Tailwind</h4>
+                        <p class="text-gray-400 text-sm">快速样式</p>
+                    </div>
+                    
+                    <div class="text-center group">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-icons text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-1">FontAwesome</h4>
+                        <p class="text-gray-400 text-sm">丰富图标</p>
+                    </div>
+                    
+                    <div class="text-center group">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-robot text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-1">AI Ready</h4>
+                        <p class="text-gray-400 text-sm">智能生成</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 装饰性元素 -->
+    <div class="absolute bottom-8 left-8 opacity-10">
+        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full"></div>
+        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full absolute top-2 left-2"></div>
+    </div>
+</div>
+
+</body>
+</html> 

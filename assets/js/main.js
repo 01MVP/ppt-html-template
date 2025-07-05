@@ -25,9 +25,10 @@ const PPTState = {
 function initializePPT() {
     // 获取配置
     PPTState.settings = PPTConfig.settings;
-    PPTState.slides = PPTConfig.slides;
-    PPTState.totalSlides = PPTConfig.slides.length;
     PPTState.currentTheme = PPTConfig.theme;
+    
+    // 加载幻灯片内容
+    loadSlideContent();
     
     // 初始化界面
     updateSlideCounter();
@@ -43,7 +44,242 @@ function initializePPT() {
     // 初始化主题
     applyTheme(PPTState.currentTheme);
     
+    // 初始化slide viewport尺寸
+    setTimeout(() => {
+        adjustSlideViewport();
+    }, 100);
+    
+    // 也在稍后再次调整，确保iframe内容加载完成后正确缩放
+    setTimeout(() => {
+        adjustSlideViewport();
+    }, 1000);
+    
+    // 初始化缩放控制器
+    initializeZoomController();
+    
     console.log('PPT initialized successfully');
+}
+
+// 加载幻灯片内容
+function loadSlideContent() {
+    try {
+        // 使用slideFiles配置来加载HTML文件
+        if (PPTConfig.slideFiles && PPTConfig.slideFiles.files) {
+            const slideFiles = PPTConfig.slideFiles.files;
+            
+            // 构建幻灯片信息数组
+            const slides = slideFiles.map((filename, index) => {
+                // 从文件名提取标题
+                let title = `幻灯片 ${index + 1}`;
+                const nameWithoutExt = filename.replace('.html', '');
+                const parts = nameWithoutExt.split('-');
+                if (parts.length > 1) {
+                    title = parts.slice(1).join(' ').replace(/[-_]/g, ' ');
+                }
+                
+                return {
+                    id: `slide-${index}`,
+                    title: title,
+                    filename: filename,
+                    filepath: PPTConfig.slideFiles.basePath + filename,
+                    notes: '' // 备注需要从iframe中获取，先设为空
+                };
+            });
+            
+            // 更新slides数组信息
+            updateSlidesInfo(slides);
+            
+            // 设置第一张幻灯片
+            if (slides.length > 0) {
+                loadSlideByIndex(0);
+            }
+            
+            console.log('Slide files loaded:', slides.length + ' slides');
+            return;
+        }
+        
+        throw new Error('没有找到可用的幻灯片文件配置');
+        
+    } catch (error) {
+        console.error('Error loading slide content:', error);
+        // 加载失败时显示错误信息
+        showErrorMessage('无法加载幻灯片内容: ' + error.message);
+    }
+}
+
+// 通过索引加载幻灯片
+function loadSlideByIndex(index) {
+    if (index < 0 || index >= PPTState.totalSlides) return;
+    
+    const slide = PPTState.slides[index];
+    const slideFrame = document.getElementById('slide-frame');
+    
+    if (slideFrame && slide) {
+        slideFrame.src = slide.filepath;
+        PPTState.currentSlide = index;
+        
+        // 更新界面
+        updateSlideCounter();
+        updateProgress();
+        updateSlideTitle();
+        updateActiveNavigation();
+        
+        // 更新侧边栏缩略图当前状态
+        if (window.sidebarThumbnails) {
+            window.sidebarThumbnails.currentSlide = index;
+            window.sidebarThumbnails.updateActiveSlide();
+        }
+        
+        // iframe加载完成后的处理
+        setTimeout(() => {
+            // 重新应用缩放以确保新加载的内容正确显示
+            adjustSlideViewport();
+        }, 500);
+        
+        console.log('Loaded slide:', slide.filename);
+    }
+}
+
+
+
+// 解析幻灯片内容
+function parseSlideContent(htmlContent, filename, index) {
+    // 创建临时DOM元素来解析内容
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    
+    // 提取标题
+    let title = `幻灯片 ${index + 1}`;
+    
+    // 从文件名提取标题
+    if (PPTConfig.slideFiles.titleExtraction.fromFilename) {
+        const nameWithoutExt = filename.replace('.html', '');
+        const parts = nameWithoutExt.split('-');
+        if (parts.length > 1) {
+            title = parts.slice(1).join('-').replace(/[-_]/g, ' ');
+        }
+    }
+    
+    // 从内容中提取标题
+    if (PPTConfig.slideFiles.titleExtraction.fromContent) {
+        const h1 = tempDiv.querySelector('h1');
+        const h2 = tempDiv.querySelector('h2');
+        if (h1) {
+            title = h1.textContent.trim();
+        } else if (h2) {
+            title = h2.textContent.trim();
+        }
+    }
+    
+    return {
+        id: `slide-${index}`,
+        title: title,
+        content: tempDiv.innerHTML,
+        filename: filename
+    };
+}
+
+// 生成幻灯片HTML
+function generateSlidesHTML(slides) {
+    return slides.map((slide, index) => {
+        const activeClass = index === 0 ? 'active' : '';
+        return `
+            <div class="slide ${activeClass}" data-slide="${index}" data-title="${slide.title}">
+                ${slide.content}
+            </div>
+        `;
+    }).join('');
+}
+
+// 更新幻灯片信息
+function updateSlidesInfo(slidesData) {
+    PPTState.slides = slidesData;
+    PPTState.totalSlides = slidesData.length;
+    PPTState.currentSlide = 0;
+    
+    // 通知新的侧边栏缩略图管理器更新
+    if (window.sidebarThumbnails) {
+        setTimeout(() => {
+            window.sidebarThumbnails.updateSidebarNavigation();
+        }, 100);
+    }
+}
+
+// 更新侧边栏导航（现在由sidebar-thumbnails.js接管）
+function updateSidebarNavigation() {
+    // 此函数已被新的侧边栏缩略图管理器替代
+    // 如果新的管理器还未初始化，则尝试通知它
+    if (window.sidebarThumbnails) {
+        window.sidebarThumbnails.updateSidebarNavigation();
+    }
+}
+
+// 重新绑定导航事件
+function bindNavigationEvents() {
+    // 清除现有的导航事件监听器
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.replaceWith(item.cloneNode(true));
+    });
+    
+    // 重新绑定导航事件
+    document.querySelectorAll('.nav-item').forEach((item, index) => {
+        item.addEventListener('click', () => goToSlide(index));
+    });
+}
+
+// 显示错误信息
+function showErrorMessage(message) {
+    const slideFrame = document.getElementById('slide-frame');
+    if (slideFrame) {
+        // 创建一个临时的错误页面
+        const errorContent = `
+            <!DOCTYPE html>
+            <html lang="zh-CN">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>加载错误</title>
+                <style>
+                    body { font-family: 'Inter', sans-serif; margin: 0; padding: 40px; background: #f8f9fa; }
+                    .error-container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+                    h2 { color: #dc3545; margin-bottom: 20px; }
+                    .solution { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+                    .solution h4 { color: #007bff; margin-bottom: 10px; }
+                    ul { list-style: none; padding: 0; }
+                    li { padding: 8px 0; color: #6c757d; }
+                    li:before { content: "✓ "; color: #28a745; font-weight: bold; margin-right: 8px; }
+                    code { background: #e9ecef; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; }
+                </style>
+            </head>
+            <body>
+                <div class="error-container">
+                    <h2>⚠️ 加载错误</h2>
+                    <p>${message}</p>
+                    <div class="solution">
+                        <h4>🔧 请检查：</h4>
+                        <ul>
+                            <li>确保 <code>slides/</code> 文件夹中有HTML文件</li>
+                            <li>检查 <code>config.js</code> 中的文件列表配置</li>
+                            <li>确认文件路径和文件名正确</li>
+                            <li>查看浏览器控制台是否有更多错误信息</li>
+                        </ul>
+                    </div>
+                    <p><strong>提示：</strong>现在可以直接双击 <code>index.html</code> 打开，无需本地服务器！</p>
+                </div>
+            </body>
+            </html>
+        `;
+        
+        slideFrame.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(errorContent);
+    }
+    
+    PPTState.slides = [{
+        id: 'error',
+        title: '错误',
+        layout: 'content'
+    }];
+    PPTState.totalSlides = 1;
+    PPTState.currentSlide = 0;
 }
 
 // 绑定事件监听器
@@ -104,36 +340,35 @@ function bindTouchEvents() {
 
 // 幻灯片导航
 function goToSlide(index) {
-    if (index < 0 || index >= PPTState.totalSlides) return;
-    
-    const currentSlideElement = document.querySelector('.slide.active');
-    const targetSlideElement = document.querySelector(`[data-slide="${index}"]`);
-    
-    if (!targetSlideElement) return;
-    
-    // 移除当前激活状态
-    currentSlideElement?.classList.remove('active');
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
-    // 添加新的激活状态
-    targetSlideElement.classList.add('active');
-    document.querySelector(`[data-slide="${index}"]`).parentElement.classList.add('active');
-    
-    // 更新状态
-    PPTState.currentSlide = index;
-    
-    // 更新界面
-    updateSlideCounter();
-    updateProgress();
-    updateSlideTitle();
-    
-    // 播放动画
-    playSlideAnimation(targetSlideElement);
+    loadSlideByIndex(index);
+}
+
+// 更新导航项的激活状态
+function updateActiveNavigation() {
+    // 通知新的侧边栏缩略图管理器更新激活状态
+    if (window.sidebarThumbnails) {
+        window.sidebarThumbnails.updateActiveSlide();
+    }
 }
 
 function nextSlide() {
+    // 如果有重新排列的幻灯片顺序，使用自定义顺序
+    if (window.sidebarThumbnails && window.sidebarThumbnails.slideOrder) {
+        const currentOrder = window.sidebarThumbnails.slideOrder;
+        const currentPos = currentOrder.indexOf(PPTState.currentSlide);
+        
+        if (currentPos !== -1) {
+            const nextPos = currentPos + 1;
+            if (nextPos < currentOrder.length) {
+                goToSlide(currentOrder[nextPos]);
+            } else if (PPTState.settings.loop) {
+                goToSlide(currentOrder[0]);
+            }
+            return;
+        }
+    }
+    
+    // 默认顺序
     const nextIndex = PPTState.currentSlide + 1;
     if (nextIndex < PPTState.totalSlides) {
         goToSlide(nextIndex);
@@ -143,6 +378,23 @@ function nextSlide() {
 }
 
 function prevSlide() {
+    // 如果有重新排列的幻灯片顺序，使用自定义顺序
+    if (window.sidebarThumbnails && window.sidebarThumbnails.slideOrder) {
+        const currentOrder = window.sidebarThumbnails.slideOrder;
+        const currentPos = currentOrder.indexOf(PPTState.currentSlide);
+        
+        if (currentPos !== -1) {
+            const prevPos = currentPos - 1;
+            if (prevPos >= 0) {
+                goToSlide(currentOrder[prevPos]);
+            } else if (PPTState.settings.loop) {
+                goToSlide(currentOrder[currentOrder.length - 1]);
+            }
+            return;
+        }
+    }
+    
+    // 默认顺序
     const prevIndex = PPTState.currentSlide - 1;
     if (prevIndex >= 0) {
         goToSlide(prevIndex);
@@ -152,10 +404,28 @@ function prevSlide() {
 }
 
 function firstSlide() {
+    // 如果有重新排列的幻灯片顺序，跳转到第一个
+    if (window.sidebarThumbnails && window.sidebarThumbnails.slideOrder) {
+        const currentOrder = window.sidebarThumbnails.slideOrder;
+        if (currentOrder.length > 0) {
+            goToSlide(currentOrder[0]);
+            return;
+        }
+    }
+    
     goToSlide(0);
 }
 
 function lastSlide() {
+    // 如果有重新排列的幻灯片顺序，跳转到最后一个
+    if (window.sidebarThumbnails && window.sidebarThumbnails.slideOrder) {
+        const currentOrder = window.sidebarThumbnails.slideOrder;
+        if (currentOrder.length > 0) {
+            goToSlide(currentOrder[currentOrder.length - 1]);
+            return;
+        }
+    }
+    
     goToSlide(PPTState.totalSlides - 1);
 }
 
@@ -182,6 +452,9 @@ function updateSlideTitle() {
         titleElement.textContent = PPTState.slides[PPTState.currentSlide].title;
     }
 }
+
+// 更新演讲者备注
+
 
 // 播放幻灯片动画
 function playSlideAnimation(slideElement) {
@@ -269,6 +542,20 @@ function handleFullscreenChange() {
             icon.className = 'fas fa-expand';
             fullscreenBtn.title = '全屏 (F11)';
         }
+    }
+    
+    // 全屏时隐藏除幻灯片外的所有UI元素
+    const body = document.body;
+    if (PPTState.isFullscreen) {
+        body.classList.add('fullscreen-mode');
+        // 全屏时重置iframe缩放
+        resetIframeScaling();
+    } else {
+        body.classList.remove('fullscreen-mode');
+        // 退出全屏时重新应用缩放
+        setTimeout(() => {
+            adjustSlideViewport();
+        }, 100);
     }
 }
 
@@ -369,12 +656,195 @@ function handleResize() {
     window.resizeTimeout = setTimeout(() => {
         // 重新计算布局
         updateSlideLayout();
-    }, 250);
+        // 调整slide viewport尺寸
+        adjustSlideViewport();
+    }, 150); // 减少延迟，让响应更快
 }
 
 function updateSlideLayout() {
     // 这里可以添加布局更新逻辑
     console.log('Layout updated');
+}
+
+// 调整slide viewport尺寸以适应窗口
+function adjustSlideViewport() {
+    const slideContainer = document.querySelector('.slide-container');
+    const slideViewport = document.querySelector('.slide-viewport');
+    
+    if (!slideContainer || !slideViewport) return;
+    
+    // 重置padding以获取真实的容器尺寸
+    slideContainer.style.padding = '0px';
+    
+    // 获取容器的原始尺寸
+    const containerRect = slideContainer.getBoundingClientRect();
+    const isMobile = window.innerWidth < 768;
+    const isSmallWindow = window.innerWidth < 1200;
+    
+    // 动态调整padding，窗口越小padding越小
+    const isVerySmall = containerRect.width < 500 || containerRect.height < 400;
+    let padding;
+    
+    if (isVerySmall) {
+        padding = Math.max(2, containerRect.width * 0.005); // 极小窗口使用最小padding
+    } else if (isMobile) {
+        padding = Math.max(4, Math.min(8, containerRect.width * 0.01)); // 移动端使用极小的padding
+    } else if (isSmallWindow) {
+        padding = Math.max(8, Math.min(16, containerRect.width * 0.015)); // 小窗口使用较小的padding
+    } else {
+        padding = Math.max(16, Math.min(24, containerRect.width * 0.02)); // 大窗口使用正常的padding
+    }
+    
+    // 应用计算出的padding
+    slideContainer.style.padding = `${padding}px`;
+    
+    // 计算可用空间
+    const availableWidth = containerRect.width - (padding * 2);
+    const availableHeight = containerRect.height - (padding * 2);
+    
+    // 调整最小尺寸限制，让小窗口能显示更多内容
+    let minWidth, minHeight;
+    if (isVerySmall) {
+        minWidth = 150;
+        minHeight = 84; // 150 * 9/16 = 84.375
+    } else if (isMobile) {
+        minWidth = 200;
+        minHeight = 112; // 200 * 9/16 = 112.5
+    } else {
+        minWidth = 240;
+        minHeight = 135; // 240 * 9/16 = 135
+    }
+    
+    // 确保有足够的空间
+    if (availableWidth < minWidth || availableHeight < minHeight) {
+        // 如果空间不足，使用更小的padding
+        if (containerRect.width < 300) {
+            padding = 1; // 超小窗口使用1px padding
+        } else {
+            padding = Math.max(2, padding / 2);
+        }
+        slideContainer.style.padding = `${padding}px`;
+        
+        // 对于超小窗口，进一步降低最小尺寸
+        if (containerRect.width < 300) {
+            minWidth = Math.max(100, containerRect.width - 10);
+            minHeight = Math.max(56, minWidth * 9 / 16);
+        }
+    }
+    
+    // 重新计算可用空间
+    const finalAvailableWidth = containerRect.width - (padding * 2);
+    const finalAvailableHeight = containerRect.height - (padding * 2);
+    
+    // 计算16:9比例下的理想尺寸
+    const aspectRatio = 16 / 9;
+    let targetWidth = finalAvailableWidth;
+    let targetHeight = finalAvailableWidth / aspectRatio;
+    
+    // 如果高度超出可用空间，则以高度为准
+    if (targetHeight > finalAvailableHeight) {
+        targetHeight = finalAvailableHeight;
+        targetWidth = finalAvailableHeight * aspectRatio;
+    }
+    
+    // 确保尺寸不超出可用空间
+    targetWidth = Math.min(targetWidth, finalAvailableWidth);
+    targetHeight = Math.min(targetHeight, finalAvailableHeight);
+    
+    // 再次校验最小尺寸
+    targetWidth = Math.max(minWidth, targetWidth);
+    targetHeight = Math.max(minHeight, targetHeight);
+    
+    // 最终校验比例
+    const currentRatio = targetWidth / targetHeight;
+    if (Math.abs(currentRatio - aspectRatio) > 0.01) {
+        if (currentRatio > aspectRatio) {
+            targetWidth = targetHeight * aspectRatio;
+        } else {
+            targetHeight = targetWidth / aspectRatio;
+        }
+    }
+    
+    // 应用尺寸
+    slideViewport.style.width = Math.round(targetWidth) + 'px';
+    slideViewport.style.height = Math.round(targetHeight) + 'px';
+    
+    // 应用iframe内容缩放
+    applyIframeScaling(targetWidth, targetHeight);
+    
+    // 计算利用率
+    const utilizationWidth = (targetWidth / containerRect.width * 100).toFixed(1);
+    const utilizationHeight = (targetHeight / containerRect.height * 100).toFixed(1);
+    
+    console.log(`Adjusted viewport: ${Math.round(targetWidth)}x${Math.round(targetHeight)} (${utilizationWidth}% × ${utilizationHeight}%), padding: ${padding}px`);
+}
+
+// 应用iframe内容缩放
+function applyIframeScaling(targetWidth, targetHeight) {
+    const iframe = document.getElementById('slide-frame');
+    if (!iframe) return;
+    
+    // 根据目标尺寸智能选择标准尺寸 - 使用更大的尺寸以显示更多内容
+    let standardWidth, standardHeight;
+    
+    // 使用更大的标准尺寸以确保能看到完整页面
+    if (targetWidth < 300) {
+        standardWidth = 1400;
+        standardHeight = 787;
+    } else if (targetWidth < 500) {
+        standardWidth = 1600;
+        standardHeight = 900;
+    } else {
+        standardWidth = 1920;
+        standardHeight = 1080;
+    }
+    
+    // 获取用户设置的缩放倍数
+    const userScaleMultiplier = window.PPTState?.userScaleMultiplier || 1.0;
+    
+    // 计算缩放比例
+    const scaleX = targetWidth / standardWidth;
+    const scaleY = targetHeight / standardHeight;
+    
+    // 使用较小的缩放比例以确保内容完全可见
+    const baseScale = Math.min(scaleX, scaleY);
+    
+    // 应用用户自定义的缩放倍数
+    const scale = baseScale * userScaleMultiplier;
+    
+    // 应用一个最小缩放限制，避免内容过小
+    const minScale = 0.05;
+    const finalScale = Math.max(scale, minScale);
+    
+    // 计算缩放后的实际尺寸
+    const scaledWidth = standardWidth * finalScale;
+    const scaledHeight = standardHeight * finalScale;
+    
+    // 计算居中的偏移量
+    const offsetX = (targetWidth - scaledWidth) / 2;
+    const offsetY = (targetHeight - scaledHeight) / 2;
+    
+    // 应用CSS变换
+    iframe.style.width = standardWidth + 'px';
+    iframe.style.height = standardHeight + 'px';
+    iframe.style.transform = `scale(${finalScale}) translate(${offsetX/finalScale}px, ${offsetY/finalScale}px)`;
+    iframe.style.transformOrigin = '0 0';
+    iframe.style.overflow = 'hidden';
+    
+    console.log(`Applied iframe scaling: ${finalScale.toFixed(3)}x (${standardWidth}x${standardHeight} → ${Math.round(scaledWidth)}x${Math.round(scaledHeight)}), user multiplier: ${userScaleMultiplier}`);
+}
+
+// 重置iframe缩放（用于全屏模式）
+function resetIframeScaling() {
+    const iframe = document.getElementById('slide-frame');
+    if (!iframe) return;
+    
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.transform = 'none';
+    iframe.style.transformOrigin = 'initial';
+    
+    console.log('Reset iframe scaling to normal');
 }
 
 // 自动播放功能
@@ -438,10 +908,7 @@ function openReadme() {
     window.open('README.md', '_blank');
 }
 
-// 导出功能
-function exportToPDF() {
-    window.print();
-}
+// 导出功能 - 现在由pdf-export.js处理
 
 // 性能监控
 function logPerformance() {
@@ -473,6 +940,58 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(logPerformance, 100);
 });
 
+// 缩放控制器功能
+function initializeZoomController() {
+    const zoomOutBtn = document.getElementById('zoom-out');
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomResetBtn = document.getElementById('zoom-reset');
+    const zoomDisplay = document.getElementById('zoom-display');
+    
+    if (!zoomOutBtn || !zoomInBtn || !zoomResetBtn || !zoomDisplay) {
+        console.warn('Zoom controller elements not found');
+        return;
+    }
+    
+    // 从localStorage获取保存的缩放倍数
+    const savedScale = localStorage.getItem('ppt-zoom-scale');
+    window.PPTState.userScaleMultiplier = savedScale ? parseFloat(savedScale) : 1.0;
+    updateZoomDisplay();
+    
+    // 缩小按钮
+    zoomOutBtn.addEventListener('click', () => {
+        window.PPTState.userScaleMultiplier = Math.max(0.2, window.PPTState.userScaleMultiplier - 0.1);
+        updateZoomAndSave();
+    });
+    
+    // 放大按钮
+    zoomInBtn.addEventListener('click', () => {
+        window.PPTState.userScaleMultiplier = Math.min(3.0, window.PPTState.userScaleMultiplier + 0.1);
+        updateZoomAndSave();
+    });
+    
+    // 重置按钮
+    zoomResetBtn.addEventListener('click', () => {
+        window.PPTState.userScaleMultiplier = 1.0;
+        updateZoomAndSave();
+    });
+    
+    function updateZoomAndSave() {
+        updateZoomDisplay();
+        localStorage.setItem('ppt-zoom-scale', window.PPTState.userScaleMultiplier.toString());
+        
+        // 重新应用缩放
+        const slideViewport = document.querySelector('.slide-viewport');
+        if (slideViewport) {
+            adjustSlideViewport();
+        }
+    }
+    
+    function updateZoomDisplay() {
+        const percentage = Math.round(window.PPTState.userScaleMultiplier * 100);
+        zoomDisplay.textContent = `${percentage}%`;
+    }
+}
+
 // 全局错误处理
 window.addEventListener('error', handleError);
 window.addEventListener('unhandledrejection', (event) => {
@@ -499,4 +1018,4 @@ window.closeWelcome = closeWelcome;
 window.openFolder = openFolder;
 window.showAIHelp = showAIHelp;
 window.openReadme = openReadme;
-window.exportToPDF = exportToPDF; 
+window.initializeZoomController = initializeZoomController; 
