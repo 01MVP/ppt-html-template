@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML PPT 模板 - 使用教程</title>
+    <meta name="description" content="一个纯HTML的PPT演示模板，支持AI生成内容，响应式设计">
+    
+    <!-- 样式文件 -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/themes/apple.css" id="theme-css">
+    
+    <!-- 字体和图标 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 欢迎提示 -->
+    <div id="welcome-overlay" class="welcome-overlay">
+        <div class="welcome-content">
+            <h1>🎉 欢迎使用 HTML PPT 模板</h1>
+            <p>这是一个纯HTML的PPT演示模板，无需安装任何软件即可使用</p>
+            <div class="welcome-buttons">
+                <button class="btn-primary" onclick="startTutorial()">
+                    <i class="fas fa-play"></i> 开始教程
+                </button>
+                <button class="btn-secondary" onclick="closeWelcome()">
+                    <i class="fas fa-times"></i> 直接使用
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="ppt-container">
+        <!-- 侧边栏导航 -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>HTML PPT</h3>
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="slide-navigation">
+                <div class="nav-item active" data-slide="0">
+                    <span class="slide-number">1</span>
+                    <span class="slide-title">欢迎使用</span>
+                </div>
+                <div class="nav-item" data-slide="1">
+                    <span class="slide-number">2</span>
+                    <span class="slide-title">功能介绍</span>
+                </div>
+                <div class="nav-item" data-slide="2">
+                    <span class="slide-number">3</span>
+                    <span class="slide-title">使用教程</span>
+                </div>
+                <div class="nav-item" data-slide="3">
+                    <span class="slide-number">4</span>
+                    <span class="slide-title">AI 提示词</span>
+                </div>
+                <div class="nav-item" data-slide="4">
+                    <span class="slide-number">5</span>
+                    <span class="slide-title">主题展示</span>
+                </div>
+                <div class="nav-item" data-slide="5">
+                    <span class="slide-number">6</span>
+                    <span class="slide-title">开始创建</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主演示区域 -->
+        <main class="main-content">
+            <!-- 控制栏 -->
+            <div class="control-bar">
+                <div class="control-left">
+                    <button class="control-btn" onclick="prevSlide()" title="上一张 (←)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="control-btn" onclick="nextSlide()" title="下一张 (→)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <span class="slide-counter">
+                        <span id="current-slide">1</span> / <span id="total-slides">6</span>
+                    </span>
+                </div>
+                
+                <div class="control-center">
+                    <h2 id="slide-title">HTML PPT 模板</h2>
+                </div>
+                
+                <div class="control-right">
+                    <button class="control-btn" onclick="toggleTheme()" title="切换主题">
+                        <i class="fas fa-palette"></i>
+                    </button>
+                    <button class="control-btn" onclick="toggleFullscreen()" title="全屏 (F11)">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    <button class="control-btn" onclick="showHelp()" title="帮助">
+                        <i class="fas fa-question"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 幻灯片展示区域 -->
+            <div class="slide-container">
+                <div class="slide-viewport" id="slide-viewport">
+                    
+                    <!-- 幻灯片 1: 欢迎页面 -->
+                    <div class="slide active" data-slide="0">
+                        <div class="slide-content cover-layout">
+                            <div class="cover-main">
+                                <h1 class="cover-title">HTML PPT 模板</h1>
+                                <p class="cover-subtitle">纯HTML + CSS + JavaScript 实现的演示文稿</p>
+                                <div class="cover-features">
+                                    <div class="feature-item">
+                                        <i class="fas fa-rocket"></i>
+                                        <span>开箱即用</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>响应式设计</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-robot"></i>
+                                        <span>AI 友好</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cover-footer">
+                                <p>使用方向键 ← → 或点击按钮切换幻灯片</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 幻灯片 2: 功能介绍 -->
+                    <div class="slide" data-slide="1">
+                        <div class="slide-content">
+                            <h2>✨ 主要功能</h2>
+                            <div class="features-grid">
+                                <div class="feature-card">
+                                    <i class="fas fa-download"></i>
+                                    <h3>零依赖安装</h3>
+                                    <p>无需安装 Node.js、Vue 等环境<br>下载解压即可使用</p>
+                                </div>
+                                <div class="feature-card">
+                                    <i class="fas fa-keyboard"></i>
+                                    <h3>键盘导航</h3>
+                                    <p>支持方向键、空格键、F11全屏<br>完整的键盘快捷键</p>
+                                </div>
+                                <div class="feature-card">
+                                    <i class="fas fa-palette"></i>
+                                    <h3>多主题切换</h3>
+                                    <p>Apple、极简、新野兽派<br>三种专业主题风格</p>
+                                </div>
+                                <div class="feature-card">
+                                    <i class="fas fa-magic"></i>
+                                    <h3>AI 提示词</h3>
+                                    <p>内置AI生成模板<br>快速创建专业PPT</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 幻灯片 3: 使用教程 -->
+                    <div class="slide" data-slide="2">
+                        <div class="slide-content">
+                            <h2>🚀 快速上手</h2>
+                            <div class="tutorial-steps">
+                                <div class="step">
+                                    <div class="step-number">1</div>
+                                    <div class="step-content">
+                                        <h3>下载模板</h3>
+                                        <p>下载整个文件夹，解压到本地</p>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">2</div>
+                                    <div class="step-content">
+                                        <h3>编辑内容</h3>
+                                        <p>修改 slides/ 文件夹中的 HTML 文件</p>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">3</div>
+                                    <div class="step-content">
+                                        <h3>更新配置</h3>
+                                        <p>在 config.js 中调整幻灯片设置</p>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">4</div>
+                                    <div class="step-content">
+                                        <h3>预览效果</h3>
+                                        <p>在浏览器中打开 index.html 查看</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 幻灯片 4: AI 提示词 -->
+                    <div class="slide" data-slide="3">
+                        <div class="slide-content">
+                            <h2>🤖 AI 提示词模板</h2>
+                            <div class="ai-prompts">
+                                <div class="prompt-category">
+                                    <h3>shadcn/ui 风格</h3>
+                                    <div class="prompt-box">
+                                        <p>"请创建一个 shadcn/ui 风格的演示，特点：现代简洁风格、采用 shadcn/ui 设计语言、简洁边框和阴影"</p>
+                                    </div>
+                                </div>
+                                <div class="prompt-category">
+                                    <h3>极简风格</h3>
+                                    <div class="prompt-box">
+                                        <p>"请创建一个极简风格的演示，特点：黑白配色、几何图形、大字体、高对比度"</p>
+                                    </div>
+                                </div>
+                                <div class="prompt-category">
+                                    <h3>新野兽派</h3>
+                                    <div class="prompt-box">
+                                        <p>"请创建一个新野兽派风格的演示，特点：大胆色彩、粗体字、不规则布局、强视觉冲击"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 幻灯片 5: 主题展示 -->
+                    <div class="slide" data-slide="4">
+                        <div class="slide-content">
+                            <h2>🎨 主题展示</h2>
+                            <div class="theme-showcase">
+                                <div class="theme-preview active-theme" data-theme="apple">
+                                    <div class="theme-sample">
+                                        <div class="sample-title">shadcn/ui 风格</div>
+                                        <div class="sample-content">现代简洁</div>
+                                    </div>
+                                    <button class="theme-btn" onclick="switchTheme('apple')">应用主题</button>
+                                </div>
+                                <div class="theme-preview" data-theme="minimal">
+                                    <div class="theme-sample">
+                                        <div class="sample-title">极简风格</div>
+                                        <div class="sample-content">黑白经典</div>
+                                    </div>
+                                    <button class="theme-btn" onclick="switchTheme('minimal')">应用主题</button>
+                                </div>
+                                <div class="theme-preview" data-theme="brutalist">
+                                    <div class="theme-sample">
+                                        <div class="sample-title">新野兽派</div>
+                                        <div class="sample-content">大胆创新</div>
+                                    </div>
+                                    <button class="theme-btn" onclick="switchTheme('brutalist')">应用主题</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 幻灯片 6: 开始创建 -->
+                    <div class="slide" data-slide="5">
+                        <div class="slide-content">
+                            <h2>🎯 开始创建你的PPT</h2>
+                            <div class="start-actions">
+                                <div class="action-card">
+                                    <i class="fas fa-file-code"></i>
+                                    <h3>编辑代码</h3>
+                                    <p>使用 Cursor、VS Code 等编辑器<br>修改 slides/ 文件夹中的内容</p>
+                                    <button class="action-btn" onclick="openFolder()">打开文件夹</button>
+                                </div>
+                                <div class="action-card">
+                                    <i class="fas fa-robot"></i>
+                                    <h3>AI 生成</h3>
+                                    <p>使用上述提示词模板<br>让AI帮你生成PPT内容</p>
+                                    <button class="action-btn" onclick="showAIHelp()">AI 助手</button>
+                                </div>
+                                <div class="action-card">
+                                    <i class="fas fa-book"></i>
+                                    <h3>查看文档</h3>
+                                    <p>阅读完整的使用文档<br>了解更多高级功能</p>
+                                    <button class="action-btn" onclick="openReadme()">查看文档</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 进度条 -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 帮助弹窗 -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>键盘快捷键</h3>
+                <button class="modal-close" onclick="closeHelp()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="shortcut-list">
+                    <div class="shortcut-item">
+                        <kbd>←</kbd> <kbd>→</kbd>
+                        <span>切换幻灯片</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Home</kbd> <kbd>End</kbd>
+                        <span>首页/末页</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Space</kbd>
+                        <span>下一张</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>F11</kbd>
+                        <span>全屏</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Esc</kbd>
+                        <span>退出全屏</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 移动端底部导航 -->
+    <div class="mobile-nav">
+        <button class="mobile-nav-btn" onclick="prevSlide()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="mobile-nav-btn" onclick="toggleSidebar()">
+            <i class="fas fa-list"></i>
+        </button>
+        <button class="mobile-nav-btn" onclick="nextSlide()">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- JavaScript 文件 -->
+    <script src="config.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/keyboard.js"></script>
+    
+    <!-- 初始化脚本 -->
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否首次访问
+            if (!localStorage.getItem('visited')) {
+                document.getElementById('welcome-overlay').style.display = 'flex';
+                localStorage.setItem('visited', 'true');
+            }
+            
+            // 初始化PPT
+            initializePPT();
+        });
+    </script>
+</body>
+</html> 
