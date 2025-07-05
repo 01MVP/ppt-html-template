@@ -68,7 +68,7 @@ class PDFExporter {
                         }
 
                                                  @page {
-                             size: A4 landscape; /* A4横向 */
+                             size: 320mm 180mm; /* 精确的16:9比例 */
                              margin: 0;
                          }
 
@@ -110,7 +110,7 @@ class PDFExporter {
                             height: 1080px;
                             border: none;
                             background: transparent;
-                            transform: scale(0.58); /* 适合A4横向的缩放 */
+                            transform: scale(0.65); /* 稍微缩小内容，提供更好的边距 */距 */
                             transform-origin: center center;
                             position: absolute;
                             top: 50%;
@@ -150,7 +150,7 @@ class PDFExporter {
                             .slide-iframe {
                                 width: 1920px !important;
                                 height: 1080px !important;
-                                transform: scale(0.234) !important; /* 屏幕预览缩放 800/1920*0.45 */
+                                transform: scale(0.262) !important; /* 屏幕预览缩放 对应打印的0.65比例 */
                                 transform-origin: center center !important;
                                 position: absolute !important;
                                 top: 50% !important;
@@ -253,7 +253,7 @@ class PDFExporter {
                             }
                             
                             .slide-iframe {
-                                transform: scale(0.58) !important; /* 适合A4横向的缩放 */
+                                transform: scale(0.65) !important; /* 稍微缩小内容，提供更好的边距 */距 */
                                 transform-origin: center center !important;
                                 position: absolute !important;
                                 top: 50% !important;
