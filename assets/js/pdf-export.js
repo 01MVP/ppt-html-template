@@ -54,9 +54,10 @@ class PDFExporter {
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>PPT导出 - PDF版本</title>
                     
-                    <!-- 引入原有样式 -->
+                    <!-- 引入原有样式 - 使用与slides相同的CDN -->
+                    <script src="https://cdn.tailwindcss.com"></script>
                     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                     
                     <style>
                         /* PDF专用样式 */
@@ -66,26 +67,28 @@ class PDFExporter {
                             box-sizing: border-box;
                         }
 
-                        @page {
-                            size: 297mm 167.0625mm; /* 16:9 比例 A4横向 */
-                            margin: 0;
-                        }
+                                                 @page {
+                             size: A4 landscape; /* A4横向 */
+                             margin: 0;
+                         }
 
                         body {
                             font-family: 'Inter', sans-serif;
                             margin: 0;
                             padding: 0;
-                            background: white;
+                            background: #000;
                         }
 
                         .slide-page {
-                            width: 297mm;
-                            height: 167.0625mm;
+                            width: 100vw;
+                            height: 100vh;
                             page-break-after: always;
                             page-break-inside: avoid;
                             position: relative;
-                            overflow: hidden;
-                            background: white;
+                            overflow: hidden !important; /* 强制隐藏滚动条 */
+                            background: transparent;
+                            margin: 0;
+                            padding: 0;
                             display: flex;
                             align-items: center;
                             justify-content: center;
@@ -99,21 +102,29 @@ class PDFExporter {
                             width: 100%;
                             height: 100%;
                             position: relative;
-                            overflow: hidden;
+                            overflow: hidden !important; /* 强制隐藏滚动条 */
                         }
 
                         .slide-iframe {
-                            width: 100%;
-                            height: 100%;
+                            width: 1920px;
+                            height: 1080px;
                             border: none;
                             background: transparent;
+                            transform: scale(0.58); /* 适合A4横向的缩放 */
+                            transform-origin: center center;
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            margin-top: -540px; /* -1080/2 */
+                            margin-left: -960px; /* -1920/2 */
                         }
 
                         /* 屏幕显示样式 */
                         @media screen {
                             body {
-                                background: #f0f0f0;
+                                background: #1a1a1a;
                                 padding: 20px;
+                                overflow-x: hidden; /* 隐藏水平滚动条 */
                             }
 
                             .slide-page {
@@ -121,7 +132,32 @@ class PDFExporter {
                                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
                                 border-radius: 8px;
                                 width: 800px;
-                                height: 450px;
+                                height: 450px; /* 800 * 9 / 16 = 450，保持16:9比例 */
+                                aspect-ratio: 16 / 9;
+                                overflow: hidden; /* 隐藏滚动条 */
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+
+                            .slide-content {
+                                overflow: hidden; /* 隐藏滚动条 */
+                                width: 100%;
+                                height: 100%;
+                                position: relative;
+                            }
+
+                            .slide-iframe {
+                                width: 1920px !important;
+                                height: 1080px !important;
+                                transform: scale(0.234) !important; /* 屏幕预览缩放 800/1920*0.45 */
+                                transform-origin: center center !important;
+                                position: absolute !important;
+                                top: 50% !important;
+                                left: 50% !important;
+                                margin-top: -540px !important; /* -1080/2 */
+                                margin-left: -960px !important; /* -1920/2 */
+                                overflow: hidden !important; /* 隐藏滚动条 */
                             }
 
                             .export-header {
@@ -169,15 +205,66 @@ class PDFExporter {
 
                         /* 打印时隐藏控制元素 */
                         @media print {
+                            * {
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+                            
+                            body {
+                                background: transparent !important;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                overflow: hidden !important; /* 隐藏滚动条 */
+                            }
+                            
+                            html {
+                                overflow: hidden !important; /* 隐藏滚动条 */
+                            }
+                            
                             .export-header,
                             .export-actions {
                                 display: none !important;
                             }
 
                             .slide-page {
-                                margin: 0;
-                                box-shadow: none;
-                                border-radius: 0;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                box-shadow: none !important;
+                                border-radius: 0 !important;
+                                background: transparent !important;
+                                width: 100vw !important;
+                                height: 100vh !important;
+                                page-break-after: always;
+                                page-break-inside: avoid;
+                                position: relative;
+                                overflow: hidden !important; /* 隐藏滚动条 */
+                                display: flex !important;
+                                align-items: center !important;
+                                justify-content: center !important;
+                            }
+                            
+                            .slide-content {
+                                width: 100% !important;
+                                height: 100% !important;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                position: relative;
+                                overflow: hidden !important; /* 隐藏滚动条 */
+                            }
+                            
+                            .slide-iframe {
+                                transform: scale(0.58) !important; /* 适合A4横向的缩放 */
+                                transform-origin: center center !important;
+                                position: absolute !important;
+                                top: 50% !important;
+                                left: 50% !important;
+                                margin-top: -540px !important; /* -1080/2 */
+                                margin-left: -960px !important; /* -1920/2 */
+                                width: 1920px !important;
+                                height: 1080px !important;
+                                border: none !important;
+                                background: transparent !important;
+                                overflow: hidden !important; /* 隐藏滚动条 */
                             }
                         }
                     </style>
@@ -189,6 +276,10 @@ class PDFExporter {
                     </div>
                     
                     <div class="export-actions">
+                        <div class="print-notice" style="background: #fef3c7; color: #92400e; padding: 12px; border-radius: 8px; margin-bottom: 16px; text-align: left;">
+                            <strong>📋 打印设置提醒：</strong><br>
+                            在Chrome打印设置中，请务必勾选 <strong>"背景图形"</strong> 选项，否则背景样式将不会显示！
+                        </div>
                         <button class="export-btn primary" onclick="window.print()">
                             <i class="fas fa-download"></i> 导出PDF
                         </button>
@@ -225,12 +316,19 @@ class PDFExporter {
             slidePage.className = 'slide-page';
             slidePage.innerHTML = `
                 <div class="slide-content">
-                    <iframe class="slide-iframe" src="${slide.filepath}" frameborder="0"></iframe>
+                    <iframe class="slide-iframe" src="${this.getAbsoluteUrl(slide.filepath)}" frameborder="0"></iframe>
                 </div>
             `;
             
             container.appendChild(slidePage);
         }
+    }
+
+    // 获取绝对URL
+    getAbsoluteUrl(relativePath) {
+        // 确保使用当前页面的基础URL
+        const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+        return baseUrl + relativePath;
     }
 
     // 等待内容加载完成
@@ -239,25 +337,70 @@ class PDFExporter {
             const iframes = this.exportWindow.document.querySelectorAll('.slide-iframe');
             let loadedCount = 0;
             
+            const checkTailwindReady = () => {
+                // 检查Tailwind CSS是否已加载
+                try {
+                    const testEl = this.exportWindow.document.createElement('div');
+                    testEl.className = 'bg-purple-500';
+                    testEl.style.visibility = 'hidden';
+                    this.exportWindow.document.body.appendChild(testEl);
+                    
+                    const computed = this.exportWindow.getComputedStyle(testEl);
+                    const bgColor = computed.backgroundColor;
+                    this.exportWindow.document.body.removeChild(testEl);
+                    
+                    // 如果背景色是紫色，说明Tailwind已加载
+                    if (bgColor.includes('147, 51, 234') || bgColor.includes('purple')) {
+                        console.log('Tailwind CSS is ready');
+                        return true;
+                    }
+                } catch (e) {
+                    console.log('Tailwind check failed:', e);
+                }
+                return false;
+            };
+            
             const checkAllLoaded = () => {
                 loadedCount++;
+                console.log(`Loaded ${loadedCount}/${iframes.length} iframes`);
                 if (loadedCount >= iframes.length) {
-                    // 额外等待一段时间确保内容完全渲染
-                    setTimeout(resolve, 2000);
+                    // 检查Tailwind CSS是否就绪
+                    const checkCSS = () => {
+                        if (checkTailwindReady()) {
+                            console.log('PDF export ready');
+                            resolve();
+                        } else {
+                            console.log('Waiting for Tailwind CSS...');
+                            setTimeout(checkCSS, 1000);
+                        }
+                    };
+                    
+                    // 给一些初始时间让CSS加载
+                    setTimeout(checkCSS, 2000);
                 }
             };
 
             if (iframes.length === 0) {
+                console.log('No iframes found');
                 resolve();
                 return;
             }
 
-            iframes.forEach(iframe => {
-                iframe.onload = checkAllLoaded;
-                iframe.onerror = checkAllLoaded;
+            iframes.forEach((iframe, index) => {
+                iframe.onload = () => {
+                    console.log(`Iframe ${index + 1} loaded successfully`);
+                    checkAllLoaded();
+                };
+                iframe.onerror = () => {
+                    console.log(`Iframe ${index + 1} failed to load`);
+                    checkAllLoaded();
+                };
                 
                 // 设置超时，避免某些iframe加载失败时卡住
-                setTimeout(checkAllLoaded, 5000);
+                setTimeout(() => {
+                    console.log(`Timeout for iframe ${index + 1}`);
+                    checkAllLoaded();
+                }, 10000);
             });
         });
     }
@@ -269,6 +412,8 @@ class PDFExporter {
         
         // 延迟触发打印，确保窗口完全加载
         setTimeout(() => {
+            // 在主窗口显示提醒
+            alert('即将打开打印对话框\n\n重要提醒：请在打印设置中勾选"背景图形"选项，确保背景样式正常显示！');
             this.exportWindow.print();
         }, 500);
     }
