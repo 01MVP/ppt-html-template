@@ -771,6 +771,19 @@ function adjustSlideViewport() {
     // 调整最大高度以确保在小窗口中也能正常显示
     const maxHeight = Math.max(200, containerRect.height - padding * 2);
     slideViewport.style.maxHeight = `${maxHeight}px`;
+
+    // 根据16:9比例计算可接受的最大宽度，避免在宽度受限时向右溢出
+    const maxWidthByRatio = maxHeight * (16 / 9);
+    const availableWidth = containerRect.width - padding * 2;
+    const maxWidth = Math.min(availableWidth, maxWidthByRatio);
+    slideViewport.style.maxWidth = `${maxWidth}px`;
+
+    // 如果可用宽度非常小，允许viewport自动缩放宽度
+    if (availableWidth < maxWidthByRatio) {
+        slideViewport.style.width = `${availableWidth}px`;
+    } else {
+        slideViewport.style.width = '100%';
+    }
     
     // 简化iframe的缩放逻辑
     adjustIframeContent();
@@ -780,28 +793,19 @@ function adjustSlideViewport() {
 
 // 简化的iframe内容调整
 function adjustIframeContent() {
-    const iframe = document.getElementById('slide-frame');
-    if (!iframe) return;
-    
     const slideViewport = document.querySelector('.slide-viewport');
     if (!slideViewport) return;
-    
-    // 获取viewport的实际尺寸
-    const viewportRect = slideViewport.getBoundingClientRect();
-    
-    // 简化缩放逻辑 - 让iframe自适应viewport
+
     const userScaleMultiplier = window.PPTState?.userScaleMultiplier || 1.0;
-    
-    // 只有在用户自定义缩放时才应用transform
+
     if (userScaleMultiplier !== 1.0) {
-        iframe.style.transform = `scale(${userScaleMultiplier})`;
-        iframe.style.transformOrigin = '0 0';
+        slideViewport.style.transform = `scale(${userScaleMultiplier})`;
+        slideViewport.style.transformOrigin = 'top left';
     } else {
-        iframe.style.transform = 'none';
-        iframe.style.transformOrigin = 'initial';
+        slideViewport.style.transform = 'none';
     }
     
-    console.log(`Adjusted iframe content with scale: ${userScaleMultiplier}`);
+    console.log(`Adjusted viewport scale: ${userScaleMultiplier}`);
 }
 
 // 应用iframe内容缩放（兼容旧版本的调用）
@@ -812,13 +816,11 @@ function applyIframeScaling(targetWidth, targetHeight) {
 
 // 重置iframe缩放（用于全屏模式）
 function resetIframeScaling() {
-    const iframe = document.getElementById('slide-frame');
-    if (!iframe) return;
-    
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    iframe.style.transform = 'none';
-    iframe.style.transformOrigin = 'initial';
+    const slideViewport = document.querySelector('.slide-viewport');
+    if (!slideViewport) return;
+
+    slideViewport.style.transform = 'none';
+    slideViewport.style.transformOrigin = 'initial';
     
     console.log('Reset iframe scaling to normal');
 }

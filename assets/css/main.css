@@ -477,10 +477,25 @@ button {
 
 /* ===== 底部幻灯片控制区域 ===== */
 .sidebar-slide-controls {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     background: var(--surface-color);
     border-top: 1px solid var(--border-color);
     margin-top: auto;
+}
+
+/* 侧边栏底部幻灯片计数器 */
+.sidebar-slide-controls .slide-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
 }
 
 .slide-navigation-controls {
@@ -512,14 +527,12 @@ button {
 }
 
 .slide-counter {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: var(--text-primary);
-    min-width: 50px;
-    justify-content: center;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    min-width: unset;
+    font-weight: 600;
 }
 
 /* ===== 主内容区域 ===== */
@@ -616,7 +629,7 @@ button {
 
 .slide-viewport {
     position: relative;
-    width: 100%;
+    width: auto;
     height: 100%;
     background: var(--surface-color);
     border-radius: var(--radius-lg);
@@ -2268,12 +2281,6 @@ button:focus,
     margin-right: var(--spacing-xs);
 }
 
-
-
-
-
-
-
 /* ===== 可展开的侧边栏区域 ===== */
 .sidebar-section-header {
     padding: var(--spacing-md) var(--spacing-lg);
@@ -2394,4 +2401,28 @@ button:focus,
 .counter-separator {
     opacity: 0.7;
     font-weight: 400;
+}
+
+/* ===== 帮助中心使用指南 ===== */
+.usage-guide {
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.usage-guide h4 {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+}
+
+.usage-guide ol {
+    padding-left: var(--spacing-lg);
+    margin: 0;
+}
+
+.usage-guide li {
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.5;
 }
