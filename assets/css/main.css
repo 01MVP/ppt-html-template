@@ -1280,11 +1280,13 @@ kbd {
 }
 
 /* ===== PPT画廊样式 ===== */
-.ppt-gallery .modal-content {
-    max-width: 95vw;
-    max-height: 80vh;
-    width: 1400px;
-    height: 600px;
+.modal-content.ppt-gallery {
+    max-width: 95vw !important;
+    max-height: 85vh !important;
+    width: 80vw !important;
+    height: 70vh !important;
+    min-width: 1000px !important;
+    min-height: 600px !important;
 }
 
 .gallery-intro {
@@ -1299,7 +1301,8 @@ kbd {
     grid-template-rows: repeat(3, 1fr);
     gap: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
-    height: 420px;
+    height: calc(70vh - 120px);
+    min-height: 550px;
     padding: var(--spacing-md);
 }
 
@@ -1313,7 +1316,7 @@ kbd {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    min-height: 120px;
+    min-height: 190px;
 }
 
 .ppt-card:hover {
@@ -1324,7 +1327,7 @@ kbd {
 
 .ppt-preview {
     width: 100%;
-    height: 100px;
+    height: 160px;
     overflow: hidden;
     background-color: var(--surface-color);
     position: relative;
@@ -1441,9 +1444,10 @@ kbd {
 
 /* 响应式调整 */
 @media (max-width: 768px) {
-    .ppt-gallery .modal-content {
-        width: 95vw;
-        height: 80vh;
+    .modal-content.ppt-gallery {
+        width: 95vw !important;
+        height: 90vh !important;
+        min-width: 350px !important;
         margin: var(--spacing-md);
     }
     
@@ -1452,15 +1456,16 @@ kbd {
         grid-template-rows: repeat(5, 1fr);
         gap: var(--spacing-sm);
         height: auto;
+        min-height: 500px;
         padding: var(--spacing-sm);
     }
     
     .ppt-card {
-        min-height: 100px;
+        min-height: 160px;
     }
     
     .ppt-preview {
-        height: 70px;
+        height: 100px;
     }
     
     .ppt-info {
@@ -1487,22 +1492,25 @@ kbd {
 
 /* 中等屏幕优化 */
 @media (min-width: 769px) and (max-width: 1024px) {
-    .ppt-gallery .modal-content {
-        width: 90vw;
-        height: 500px;
+        .modal-content.ppt-gallery {
+        width: 85vw !important;
+        height: 70vh !important;
+        min-height: 550px !important;
+        min-width: 700px !important;
     }
     
     .ppt-gallery-grid {
-        height: 350px;
+        height: calc(70vh - 120px);
+        min-height: 500px;
         gap: var(--spacing-md);
     }
     
     .ppt-card {
-        min-height: 100px;
+        min-height: 180px;
     }
     
     .ppt-preview {
-        height: 80px;
+        height: 130px;
     }
     
     .ppt-info h4 {
