@@ -127,6 +127,13 @@
         height: 32px;
     }
     
+    .control-left,
+    .control-right {
+        gap: var(--spacing-xs);
+        max-width: 38%;
+        overflow: hidden;
+    }
+    
     .slide-counter {
         display: none; /* 在手机上隐藏计数器 */
     }
@@ -291,6 +298,17 @@
     
     .control-center h2 {
         font-size: var(--font-size-sm);
+    }
+    
+    .control-left,
+    .control-right {
+        max-width: 42%;
+    }
+    
+    .control-btn {
+        width: 28px;
+        height: 28px;
+        padding: var(--spacing-xs);
     }
 }
 

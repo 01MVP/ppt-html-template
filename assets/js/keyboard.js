@@ -283,57 +283,31 @@ class KeyboardController {
     }
 
     // 演讲者模式切换
+    // 演讲者模式功能暂时移除，因为在Web环境中实现复杂
+    // 用户可以通过全屏模式(F11)获得类似的演示体验
     toggleSpeakerMode() {
-        PPTState.isPresenting = !PPTState.isPresenting;
-        
-        if (PPTState.isPresenting) {
-            this.enterSpeakerMode();
-        } else {
-            this.exitSpeakerMode();
-        }
+        this.showKeyboardFeedback('演讲者模式暂不支持，建议使用全屏模式 (F11)');
+        console.warn('演讲者模式在Web环境中暂不支持，建议使用全屏模式 (F11) 获得类似体验');
     }
 
     enterSpeakerMode() {
-        // 进入演讲者模式
-        document.body.classList.add('speaker-mode');
-        
-        // 隐藏不必要的界面元素
-        const elementsToHide = [
-            '.sidebar',
-            '.control-bar',
-            '.welcome-overlay'
-        ];
-        
-        elementsToHide.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-                el.style.display = 'none';
-            });
-        });
-
-        // 显示演讲者信息
-        this.showSpeakerNotes();
+        // 功能暂时移除
+        this.toggleSpeakerMode();
     }
 
     exitSpeakerMode() {
-        // 退出演讲者模式
-        document.body.classList.remove('speaker-mode');
-        
-        // 恢复界面元素
-        const elementsToShow = [
-            '.sidebar',
-            '.control-bar'
-        ];
-        
-        elementsToShow.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-                el.style.display = '';
-            });
-        });
+        // 功能暂时移除
+        this.toggleSpeakerMode();
+    }
 
-        // 隐藏演讲者信息
-        this.hideSpeakerNotes();
+    showSpeakerNotes() {
+        // 功能暂时移除
+        this.toggleSpeakerMode();
+    }
+
+    hideSpeakerNotes() {
+        // 功能暂时移除
+        this.toggleSpeakerMode();
     }
 
 
@@ -385,7 +359,7 @@ class KeyboardController {
             
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
-                    this.selectFirstResult();
+                    this.performSearch(e.target.value);
                 } else if (e.key === 'Escape') {
                     this.hideSearch();
                 }

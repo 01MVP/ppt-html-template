@@ -154,7 +154,8 @@ const PPTConfig = {
         // 帮助
         help: ['KeyH', 'F1'],
         
-
+        // 演讲者模式（暂不支持）
+        // speaker: ['KeyS'],
         
         // 切换主题
         theme: ['KeyT'],
