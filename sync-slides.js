@@ -3,27 +3,27 @@
 const fs = require('fs');
 const path = require('path');
 
-const SLIDES_DIR = './slides';
+const SLIDES_DIR = './ppt/default';
 const CONFIG_FILE = './config.js';
 
 console.log('🔄 HTML PPT 幻灯片同步工具');
 console.log('============================');
 
-// 检查slides文件夹是否存在
+// 检查ppt/default文件夹是否存在
 if (!fs.existsSync(SLIDES_DIR)) {
-    console.error('❌ slides文件夹不存在！');
-    console.log('💡 请确保项目根目录中有slides文件夹');
+    console.error('❌ ppt/default文件夹不存在！');
+    console.log('💡 请确保项目根目录中有ppt/default文件夹');
     process.exit(1);
 }
 
-// 扫描slides文件夹
+// 扫描ppt/default文件夹
 const files = fs.readdirSync(SLIDES_DIR)
     .filter(file => file.endsWith('.html'))
     .sort();
 
 if (files.length === 0) {
-    console.log('⚠️  slides文件夹中没有找到HTML文件');
-    console.log('💡 请在slides文件夹中创建HTML幻灯片文件');
+    console.log('⚠️  ppt/default文件夹中没有找到HTML文件');
+    console.log('💡 请在ppt/default文件夹中创建HTML幻灯片文件');
     process.exit(0);
 }
 

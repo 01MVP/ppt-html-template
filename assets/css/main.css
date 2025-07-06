@@ -1279,76 +1279,127 @@ kbd {
     margin-right: var(--spacing-sm);
 }
 
-/* ===== 文件夹选择器样式 ===== */
-.folder-options {
-    margin: var(--spacing-lg) 0;
+/* ===== PPT画廊样式 ===== */
+.ppt-gallery .modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 1200px;
 }
 
-.folder-option {
-    display: flex;
-    align-items: center;
-    padding: var(--spacing-md);
+.gallery-intro {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.ppt-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.ppt-card {
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--spacing-sm);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
     cursor: pointer;
     transition: all var(--duration-fast) ease;
-    flex-direction: column;
-    align-items: flex-start;
+    background-color: var(--background-color);
 }
 
-.folder-option:hover {
-    background-color: var(--hover-color);
+.ppt-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border-color: var(--primary-color);
 }
 
-.folder-option:last-child {
-    margin-bottom: 0;
-}
-
-.folder-option .folder-header {
-    display: flex;
-    align-items: center;
+.ppt-preview {
     width: 100%;
-    margin-bottom: var(--spacing-xs);
+    height: 160px;
+    overflow: hidden;
+    background-color: var(--surface-color);
+    position: relative;
 }
 
-.folder-option i {
-    color: var(--primary-color);
-    margin-right: var(--spacing-md);
-    font-size: 1.2rem;
+.preview-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none;
+    transform: scale(0.3);
+    transform-origin: top left;
+    width: 333.33%;
+    height: 333.33%;
 }
 
-.folder-option span {
-    font-weight: 500;
-    flex: 1;
+.ppt-info {
+    padding: var(--spacing-md);
 }
 
-.folder-option small {
+.ppt-info h4 {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.ppt-info p {
+    margin: 0 0 var(--spacing-sm) 0;
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
-    margin-left: 2rem;
+    line-height: 1.4;
+}
+
+.ppt-badge {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ppt-badge.default {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.ppt-badge.creative {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.ppt-badge.professional {
+    background-color: #4ecdc4;
+    color: white;
+}
+
+.custom-folder-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
 }
 
 .custom-folder-input {
-    margin-top: var(--spacing-lg);
-    padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
 }
 
 .custom-folder-input label {
-    display: block;
-    margin-bottom: var(--spacing-sm);
     font-weight: 500;
+    color: var(--text-primary);
 }
 
 .custom-folder-input input {
-    width: 70%;
+    flex: 1;
     padding: var(--spacing-sm);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
-    margin-right: var(--spacing-sm);
     font-family: inherit;
+    margin-right: var(--spacing-sm);
 }
 
 .custom-folder-input button {
@@ -1360,10 +1411,33 @@ kbd {
     cursor: pointer;
     transition: background-color var(--duration-fast) ease;
     font-family: inherit;
+    font-weight: 500;
 }
 
 .custom-folder-input button:hover {
     background-color: var(--secondary-color);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .ppt-gallery .modal-content {
+        width: 95vw;
+        margin: var(--spacing-md);
+    }
+    
+    .ppt-gallery-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .custom-folder-input {
+        flex-direction: column;
+    }
+    
+    .custom-folder-input input {
+        margin-right: 0;
+        margin-bottom: var(--spacing-sm);
+    }
 }
 
 /* ===== 移动端底部导航 ===== */

@@ -18,10 +18,10 @@ const PPTConfig = {
     
     // 幻灯片文件夹配置
     slideFiles: {
-        // slides文件夹路径
-        basePath: "slides/",
+        // PPT文件夹路径
+        basePath: "ppt/default/",
         
-        // 自动检测slides文件夹下的html文件
+        // 自动检测ppt文件夹下的html文件
         autoDetect: true,
         
         // 文件排序方式：'name' | 'date' | 'custom'

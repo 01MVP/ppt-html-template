@@ -32,18 +32,19 @@
 请基于本HTML PPT模板创建一个关于 [你的主题] 的演示文稿。
 
 要求：
-- 在 slides/ 文件夹中创建 HTML 文件
+- 在 ppt/ 文件夹中创建新的项目文件夹
 - 使用现代化设计和 Tailwind CSS
 - 文件命名：01-cover.html, 02-content.html...
 - 每个文件包含完整的HTML结构
 - 16:9比例布局，响应式设计
 
 示例文件结构：
-slides/
-├── 01-cover.html     # 封面页
-├── 02-agenda.html    # 议程页  
-├── 03-content.html   # 内容页
-└── 04-thanks.html    # 感谢页
+ppt/
+├── my-presentation/   # 你的演示文稿
+│   ├── 01-cover.html     # 封面页
+│   ├── 02-agenda.html    # 议程页  
+│   ├── 03-content.html   # 内容页
+│   └── 04-thanks.html    # 感谢页
 ```
 
 3. AI 会自动生成所有幻灯片文件
@@ -51,7 +52,7 @@ slides/
 
 ### 方式三：手动创建
 
-在 `slides/` 文件夹中直接创建 HTML 文件，系统会自动识别并加载。
+在 `ppt/` 文件夹中创建新的项目文件夹，然后在其中创建 HTML 文件，系统会自动识别并加载。
 
 > **💡 重要提醒：** 本项目完全零依赖，**无需安装任何工具**（如 npm、python 等），直接双击 index.html 即可使用！
 
@@ -86,11 +87,20 @@ ppt-html-template/
 ├── index.html           # 主文件（双击即可打开）
 ├── config.js           # 自动配置文件
 ├── sync-slides.js      # 幻灯片同步工具
-├── slides/             # 幻灯片文件夹 ⭐
-│   ├── 01-welcome.html
-│   ├── 02-features.html
-│   ├── 03-how-to-use.html
-│   └── [AI生成的文件]  # AI会在这里创建新文件
+├── ppt/                # PPT文件夹 ⭐
+│   ├── default/        # 默认演示文稿
+│   │   ├── 01-welcome.html
+│   │   ├── 02-features.html
+│   │   └── 03-how-to-use.html
+│   └── examples/       # 示例演示文稿
+│       ├── neobrutalism/  # 新野兽派风格
+│       │   ├── 01-cover.html
+│       │   ├── 02-content.html
+│       │   └── 03-thanks.html
+│       └── minimal/    # 极简风格
+│           ├── 01-cover.html
+│           ├── 02-content.html
+│           └── 03-thanks.html
 ├── assets/
 │   ├── css/            # 样式文件
 │   │   ├── main.css    # 主样式
@@ -104,7 +114,7 @@ ppt-html-template/
 └── README.md           # 项目说明
 ```
 
-> **⭐ 重要：** `slides/` 文件夹是核心，所有幻灯片都在这里。AI 会自动在此创建新文件。
+> **⭐ 重要：** `ppt/` 文件夹是核心，所有演示文稿都在这里。AI 会自动在此创建新的项目文件夹。
 
 ## ⌨️ 常用快捷键
 
@@ -183,16 +193,16 @@ ppt-html-template/
 ## 🆘 常见问题
 
 **Q: 如何使用AI生成内容？**
-A: 在AI编辑器中描述你的需求，让AI在 `slides/` 文件夹中创建HTML文件即可。
+A: 在AI编辑器中描述你的需求，让AI在 `ppt/` 文件夹中创建新的项目文件夹和HTML文件即可。
 
 **Q: 为什么新添加的幻灯片没有显示？**
-A: 刷新浏览器页面，系统会自动检测新文件。确保文件在 `slides/` 文件夹中。
+A: 刷新浏览器页面，系统会自动检测新文件。确保文件在 `ppt/` 文件夹的对应项目文件夹中。
 
 **Q: 如何创建多个PPT项目？**
-A: 创建不同的文件夹，每个包含独立的幻灯片文件，然后使用文件夹选择器切换。
+A: 在 `ppt/` 文件夹中创建不同的子文件夹，每个包含独立的幻灯片文件，然后使用文件夹选择器切换。
 
 **Q: 如何查看示例PPT？**
-A: 点击工具栏的文件夹图标，选择 `examples/neobrutalism` 或 `examples/minimal` 查看不同风格的示例。
+A: 点击工具栏的文件夹图标，选择 `neobrutalism` 或 `minimal` 查看不同风格的示例。
 
 **Q: 可以离线使用吗？**
 A: 是的，除了在线字体和图标，所有功能都可以离线使用。
@@ -218,7 +228,7 @@ MIT License - 自由使用、修改和分发
 
 - **详细使用指南**：[how-to-use.md](how-to-use.md)
 - **AI编辑器推荐**：[Cursor](https://cursor.sh/) | [Trae](https://trae.ai/) | [Windsurf](https://windsurf.ai/)
-- **同步工具**：使用 `node sync-slides.js` 同步幻灯片文件
+- **同步工具**：使用 `node sync-slides.js` 同步默认演示文稿文件
 
 ---
 

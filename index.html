@@ -145,44 +145,64 @@
         </div>
     </div>
 
-    <!-- 文件夹选择弹窗 -->
+    <!-- PPT画廊选择弹窗 -->
     <div id="folder-selector-modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content ppt-gallery">
             <div class="modal-header">
-                <h3>选择PPT文件夹</h3>
+                <h3>选择PPT演示文稿</h3>
                 <button class="modal-close" onclick="closeFolderSelector()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p>选择包含HTML幻灯片的文件夹：</p>
-                <div class="folder-options">
-                    <div class="folder-option" onclick="selectFolder('slides')">
-                        <div class="folder-header">
-                            <i class="fas fa-folder"></i>
-                            <span>slides (默认)</span>
+                <p class="gallery-intro">浏览所有可用的PPT演示文稿：</p>
+                
+                <!-- PPT画廊网格 -->
+                <div class="ppt-gallery-grid" id="ppt-gallery-grid">
+                    <!-- 默认PPT -->
+                    <div class="ppt-card" onclick="selectFolder('ppt/default')">
+                        <div class="ppt-preview">
+                            <iframe src="ppt/default/01-welcome.html" class="preview-frame"></iframe>
                         </div>
-                        <small>当前使用的文件夹</small>
+                        <div class="ppt-info">
+                            <h4>默认演示</h4>
+                            <p>HTML PPT模板介绍</p>
+                            <span class="ppt-badge default">默认</span>
+                        </div>
                     </div>
-                    <div class="folder-option" onclick="selectFolder('examples/neobrutalism')">
-                        <div class="folder-header">
-                            <i class="fas fa-folder"></i>
-                            <span>examples/neobrutalism</span>
+                    
+                    <!-- 新野兽派风格 -->
+                    <div class="ppt-card" onclick="selectFolder('ppt/examples/neobrutalism')">
+                        <div class="ppt-preview">
+                            <iframe src="ppt/examples/neobrutalism/01-cover.html" class="preview-frame"></iframe>
                         </div>
-                        <small>新野兽派风格示例</small>
+                        <div class="ppt-info">
+                            <h4>新野兽派</h4>
+                            <p>大胆色彩、强视觉冲击</p>
+                            <span class="ppt-badge creative">创意</span>
+                        </div>
                     </div>
-                    <div class="folder-option" onclick="selectFolder('examples/minimal')">
-                        <div class="folder-header">
-                            <i class="fas fa-folder"></i>
-                            <span>examples/minimal</span>
+                    
+                    <!-- 极简风格 -->
+                    <div class="ppt-card" onclick="selectFolder('ppt/examples/minimal')">
+                        <div class="ppt-preview">
+                            <iframe src="ppt/examples/minimal/01-cover.html" class="preview-frame"></iframe>
                         </div>
-                        <small>极简风格示例</small>
+                        <div class="ppt-info">
+                            <h4>极简主义</h4>
+                            <p>简洁优雅、专业商务</p>
+                            <span class="ppt-badge professional">商务</span>
+                        </div>
                     </div>
                 </div>
-                <div class="custom-folder-input">
-                    <label>或输入自定义文件夹路径：</label>
-                    <input type="text" id="custom-folder-path" placeholder="例如：my-ppt-folder">
-                    <button onclick="selectCustomFolder()">切换</button>
+                
+                <!-- 自定义文件夹输入 -->
+                <div class="custom-folder-section">
+                    <div class="custom-folder-input">
+                        <label>或输入自定义PPT文件夹路径：</label>
+                        <input type="text" id="custom-folder-path" placeholder="例如：ppt/my-presentation">
+                        <button onclick="selectCustomFolder()">打开</button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1014,7 +1014,72 @@ window.addEventListener('unhandledrejection', (event) => {
 
 // 文件夹选择功能
 function showFolderSelector() {
+    // 先加载PPT画廊
+    loadPPTGallery();
     document.getElementById('folder-selector-modal').style.display = 'flex';
+}
+
+// 加载PPT画廊
+function loadPPTGallery() {
+    const galleryGrid = document.getElementById('ppt-gallery-grid');
+    if (!galleryGrid) return;
+    
+    // 清空现有内容
+    galleryGrid.innerHTML = '';
+    
+    // 预定义的PPT项目
+    const pptProjects = [
+        {
+            path: 'ppt/default',
+            name: '默认演示',
+            description: 'HTML PPT模板介绍',
+            badge: '默认',
+            badgeClass: 'default',
+            previewFile: 'ppt/default/01-welcome.html'
+        },
+        {
+            path: 'ppt/examples/neobrutalism',
+            name: '新野兽派',
+            description: '大胆色彩、强视觉冲击',
+            badge: '创意',
+            badgeClass: 'creative',
+            previewFile: 'ppt/examples/neobrutalism/01-cover.html'
+        },
+        {
+            path: 'ppt/examples/minimal',
+            name: '极简主义',
+            description: '简洁优雅、专业商务',
+            badge: '商务',
+            badgeClass: 'professional',
+            previewFile: 'ppt/examples/minimal/01-cover.html'
+        }
+    ];
+    
+    // 为每个项目创建卡片
+    pptProjects.forEach(project => {
+        const card = createPPTCard(project);
+        galleryGrid.appendChild(card);
+    });
+}
+
+// 创建PPT卡片
+function createPPTCard(project) {
+    const card = document.createElement('div');
+    card.className = 'ppt-card';
+    card.onclick = () => selectFolder(project.path);
+    
+    card.innerHTML = `
+        <div class="ppt-preview">
+            <iframe src="${project.previewFile}" class="preview-frame"></iframe>
+        </div>
+        <div class="ppt-info">
+            <h4>${project.name}</h4>
+            <p>${project.description}</p>
+            <span class="ppt-badge ${project.badgeClass}">${project.badge}</span>
+        </div>
+    `;
+    
+    return card;
 }
 
 function closeFolderSelector() {
@@ -1024,17 +1089,17 @@ function closeFolderSelector() {
 function selectFolder(folderPath) {
     // 预定义不同文件夹的文件列表
     const folderFiles = {
-        'slides': [
+        'ppt/default': [
             '01-welcome.html',
             '02-features.html', 
             '03-how-to-use.html'
         ],
-        'examples/neobrutalism': [
+        'ppt/examples/neobrutalism': [
             '01-cover.html',
             '02-content.html',
             '03-thanks.html'
         ],
-        'examples/minimal': [
+        'ppt/examples/minimal': [
             '01-cover.html',
             '02-content.html',
             '03-thanks.html'
@@ -1082,20 +1147,20 @@ function selectCustomFolder() {
 // 页面加载时恢复用户选择的文件夹
 function restoreUserFolder() {
     const savedFolder = localStorage.getItem('ppt-folder-path');
-    if (savedFolder && savedFolder !== 'slides') {
+    if (savedFolder && savedFolder !== 'ppt/default') {
         // 预定义不同文件夹的文件列表
         const folderFiles = {
-            'slides': [
+            'ppt/default': [
                 '01-welcome.html',
                 '02-features.html', 
                 '03-how-to-use.html'
             ],
-            'examples/neobrutalism': [
+            'ppt/examples/neobrutalism': [
                 '01-cover.html',
                 '02-content.html',
                 '03-thanks.html'
             ],
-            'examples/minimal': [
+            'ppt/examples/minimal': [
                 '01-cover.html',
                 '02-content.html',
                 '03-thanks.html'
@@ -1139,4 +1204,6 @@ window.initializeZoomController = initializeZoomController;
 window.showFolderSelector = showFolderSelector;
 window.closeFolderSelector = closeFolderSelector;
 window.selectFolder = selectFolder;
-window.selectCustomFolder = selectCustomFolder; 
+window.selectCustomFolder = selectCustomFolder;
+window.loadPPTGallery = loadPPTGallery;
+window.createPPTCard = createPPTCard; 
