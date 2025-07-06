@@ -36,9 +36,9 @@
     <!-- 主要内容区域 -->
     <div class="ppt-container">
         <!-- 侧边栏导航 -->
-        <nav class="sidebar" id="sidebar">
+        <nav class="sidebar open" id="sidebar">
             <div class="sidebar-header">
-                <h3>HTML PPT</h3>
+                <h3>PPT 控制面板</h3>
                 <button class="sidebar-toggle" onclick="toggleSidebar()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -52,9 +52,9 @@
                         <i class="fas fa-folder-open"></i>
                         <span>切换项目</span>
                     </button>
-                    <button class="sidebar-function-btn" onclick="showFunctionPanel()" title="功能面板 (Ctrl+/)">
-                        <i class="fas fa-cogs"></i>
-                        <span>功能中心</span>
+                    <button class="sidebar-function-btn" onclick="showHelp()" title="帮助中心">
+                        <i class="fas fa-question-circle"></i>
+                        <span>帮助中心</span>
                     </button>
                     <button class="sidebar-function-btn" onclick="showPresentationTimer()" title="演示计时器 (Alt+T)">
                         <i class="fas fa-clock"></i>
@@ -68,6 +68,20 @@
                         <i class="fas fa-file-pdf"></i>
                         <span>导出PDF</span>
                     </button>
+                </div>
+            </div>
+            
+            <!-- 幻灯片导航区域 -->
+            <div class="sidebar-navigation">
+                <h4>幻灯片导航</h4>
+                <div class="sidebar-controls">
+                    <button class="sidebar-control-btn custom-tooltip" onclick="resetSlideOrder()" data-tooltip="恢复默认顺序">
+                        <i class="fas fa-undo"></i>
+                        <span>重置顺序</span>
+                    </button>
+                </div>
+                <div class="slide-navigation" id="slide-navigation">
+                    <!-- 导航项将由JavaScript动态生成 -->
                 </div>
             </div>
             
@@ -85,20 +99,6 @@
                     <button id="sidebar-zoom-reset" class="zoom-btn" title="重置缩放">
                         <i class="fas fa-home"></i>
                     </button>
-                </div>
-            </div>
-            
-            <!-- 幻灯片导航区域 -->
-            <div class="sidebar-navigation">
-                <h4>幻灯片导航</h4>
-                <div class="sidebar-controls">
-                    <button class="sidebar-control-btn custom-tooltip" onclick="resetSlideOrder()" data-tooltip="恢复默认顺序">
-                        <i class="fas fa-undo"></i>
-                        <span>重置顺序</span>
-                    </button>
-                </div>
-                <div class="slide-navigation" id="slide-navigation">
-                    <!-- 导航项将由JavaScript动态生成 -->
                 </div>
             </div>
         </nav>

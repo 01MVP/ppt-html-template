@@ -87,7 +87,7 @@
         --spacing-3xl: 2.5rem;     /* 40px */
     }
     
-    /* 隐藏桌面端侧边栏 */
+    /* 移动端侧边栏样式 */
     .sidebar {
         position: fixed;
         top: 0;
@@ -97,10 +97,32 @@
         z-index: var(--z-sidebar);
         background-color: var(--background-color);
         box-shadow: var(--shadow-xl);
+        width: min(320px, 80vw);
     }
     
     .sidebar.open {
         transform: translateX(0);
+    }
+    
+    /* 移动端sidebar内容优化 */
+    .sidebar-functions,
+    .sidebar-navigation,
+    .sidebar-zoom {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .sidebar-function-btn {
+        padding: var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+    
+    .zoom-controls {
+        padding: var(--spacing-xs);
+    }
+    
+    .zoom-btn {
+        width: 28px;
+        height: 28px;
     }
     
     .sidebar-header {

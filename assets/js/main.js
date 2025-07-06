@@ -27,11 +27,11 @@ function initializePPT() {
     PPTState.settings = PPTConfig.settings;
     PPTState.currentTheme = PPTConfig.theme;
     
-    // 初始化sidebar状态
-    PPTState.isSidebarOpen = false;
+    // 初始化sidebar状态 - 默认展开
+    PPTState.isSidebarOpen = true;
     const sidebar = document.getElementById('sidebar');
     if (sidebar) {
-        sidebar.classList.remove('open');
+        sidebar.classList.add('open');
     }
     
     // 恢复用户选择的文件夹
@@ -514,9 +514,9 @@ function toggleSidebar() {
         });
     } else {
         sidebar.classList.remove('open');
-        // Sidebar内的关闭按钮显示X
+        // Sidebar内的关闭按钮显示菜单图标
         if (toggleBtn) {
-            toggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+            toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
         }
         // 主控制栏的菜单按钮显示菜单图标
         mainToggleBtns.forEach(btn => {
@@ -531,6 +531,23 @@ function closeSidebar() {
     const sidebar = document.getElementById('sidebar');
     PPTState.isSidebarOpen = false;
     sidebar.classList.remove('open');
+}
+
+// 修复PDF导出功能
+function showPresentationTimer() {
+    // 显示演示计时器
+    if (window.presentationTimer) {
+        window.presentationTimer.show();
+    } else {
+        showToast('演示计时器功能正在开发中', 2000);
+    }
+}
+
+// 重置幻灯片顺序
+function resetSlideOrder() {
+    // 重新加载幻灯片内容，恢复默认顺序
+    loadSlideContent();
+    showToast('幻灯片顺序已重置', 2000);
 }
 
 // 全屏控制
@@ -686,7 +703,7 @@ function checkMobileDevice() {
     document.body.classList.toggle('tablet', isTablet);
     
     // 移动端自动隐藏侧边栏
-    if (isMobile && PPTState.settings.hideSidebarOnMobile) {
+    if (isMobile) {
         closeSidebar();
     }
 }
@@ -1303,6 +1320,8 @@ window.firstSlide = firstSlide;
 window.lastSlide = lastSlide;
 window.toggleSidebar = toggleSidebar;
 window.closeSidebar = closeSidebar;
+window.showPresentationTimer = showPresentationTimer;
+window.resetSlideOrder = resetSlideOrder;
 window.toggleFullscreen = toggleFullscreen;
 window.switchTheme = switchTheme;
 window.toggleTheme = toggleTheme;
