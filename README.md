@@ -201,6 +201,16 @@ A: 刷新浏览器页面，系统会自动检测新文件。确保文件在 `ppt
 **Q: 如何创建多个PPT项目？**
 A: 在 `ppt/` 文件夹中创建不同的子文件夹，每个包含独立的幻灯片文件，然后使用文件夹选择器切换。
 
+**文件夹命名建议：**
+- 使用有意义的名称：`ppt/product-launch`、`ppt/quarterly-report`
+- 避免使用特殊字符和空格，使用连字符分隔单词
+- 所有项目都应该在 `ppt/` 文件夹下
+
+**最佳实践：**
+- 保持同一项目中所有幻灯片使用相同的设计风格
+- 使用有序的文件名：`01-cover.html`、`02-content.html`
+- 确保在不同设备上都能正常显示
+
 **Q: 如何查看示例PPT？**
 A: 点击工具栏的文件夹图标，选择 `neobrutalism` 或 `minimal` 查看不同风格的示例。
 
@@ -226,9 +236,9 @@ MIT License - 自由使用、修改和分发
 
 ## 🔗 相关链接
 
-- **详细使用指南**：[how-to-use.md](how-to-use.md)
 - **AI编辑器推荐**：[Cursor](https://cursor.sh/) | [Trae](https://trae.ai/) | [Windsurf](https://windsurf.ai/)
 - **同步工具**：使用 `node sync-slides.js` 同步默认演示文稿文件
+- **示例风格**：项目内置两种示例风格供参考学习
 
 ---
 
