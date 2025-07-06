@@ -23,14 +23,7 @@ class FunctionPanel {
                         shortcut: 'Alt + T',
                         action: () => this.showPresentationTimer()
                     },
-                    {
-                        id: 'speaker-mode',
-                        name: '演讲者模式',
-                        icon: 'fas fa-microphone',
-                        description: '显示备注和下一张幻灯片预览',
-                        shortcut: 'S',
-                        action: () => this.toggleSpeakerMode()
-                    },
+
                     {
                         id: 'fullscreen',
                         name: '全屏演示',
@@ -83,14 +76,7 @@ class FunctionPanel {
                 name: '导航功能',
                 icon: 'fas fa-map',
                 items: [
-                    {
-                        id: 'slide-search',
-                        name: '幻灯片搜索',
-                        icon: 'fas fa-search',
-                        description: '快速搜索和定位幻灯片内容',
-                        shortcut: 'Ctrl/Cmd + F',
-                        action: () => this.toggleSearch()
-                    },
+
                     {
                         id: 'goto-slide',
                         name: '跳转到指定幻灯片',
@@ -105,14 +91,7 @@ class FunctionPanel {
                 name: '文件操作',
                 icon: 'fas fa-file',
                 items: [
-                    {
-                        id: 'save-presentation',
-                        name: '保存演示文稿',
-                        icon: 'fas fa-save',
-                        description: '保存当前演示文稿到本地',
-                        shortcut: 'Ctrl/Cmd + S',
-                        action: () => this.savePresentation()
-                    },
+
                     {
                         id: 'export-pdf',
                         name: '导出 PDF',
@@ -121,14 +100,7 @@ class FunctionPanel {
                         shortcut: 'Ctrl/Cmd + P',
                         action: () => this.exportToPDF()
                     },
-                    {
-                        id: 'load-presentation',
-                        name: '加载演示文稿',
-                        icon: 'fas fa-folder-open',
-                        description: '从本地加载之前保存的演示文稿',
-                        shortcut: 'Ctrl/Cmd + O',
-                        action: () => this.loadPresentation()
-                    }
+
                 ]
             }
         };
@@ -152,7 +124,6 @@ class FunctionPanel {
                     <h4>专业演示功能</h4>
                     <ul>
                         <li>按 <kbd>F11</kbd> 进入全屏模式</li>
-                        <li>按 <kbd>S</kbd> 开启演讲者模式，查看备注</li>
                         <li>按 <kbd>B</kbd> 或 <kbd>.</kbd> 进入黑屏模式</li>
                         <li>使用 <kbd>Alt + T</kbd> 打开演示计时器</li>
                     </ul>
@@ -175,10 +146,10 @@ class FunctionPanel {
                 content: `
                     <h4>提高效率的技巧</h4>
                     <ul>
-                        <li>使用 <kbd>Ctrl/Cmd + S</kbd> 随时保存工作</li>
-                        <li>使用 <kbd>Ctrl/Cmd + F</kbd> 搜索幻灯片内容</li>
                         <li>在演示计时器中设置目标时间</li>
                         <li>在布局模板中预览效果再应用</li>
+                        <li>使用数字键 1-9 快速跳转到指定幻灯片</li>
+                        <li>使用文件夹图标快速切换不同PPT项目</li>
                     </ul>
                 `
             }
@@ -308,20 +279,15 @@ class FunctionPanel {
             '演示控制': [
                 { keys: 'F11', desc: '全屏/退出全屏' },
                 { keys: 'Esc', desc: '退出全屏' },
-                { keys: 'S', desc: '演讲者模式' },
                 { keys: 'B / .', desc: '黑屏模式' },
                 { keys: 'Alt + T', desc: '演示计时器' }
             ],
             '编辑功能': [
                 { keys: 'Alt + O', desc: '幻灯片概览' },
-                { keys: 'Alt + L', desc: '布局模板' },
-                { keys: 'Ctrl/Cmd + F', desc: '搜索幻灯片' }
+                { keys: 'Alt + L', desc: '布局模板' }
             ],
             '文件操作': [
-                { keys: 'Ctrl/Cmd + S', desc: '保存演示文稿' },
-                { keys: 'Ctrl/Cmd + O', desc: '打开演示文稿' },
-                { keys: 'Ctrl/Cmd + P', desc: '导出PDF' },
-                { keys: 'Ctrl/Cmd + N', desc: '新建演示文稿' }
+                { keys: 'Ctrl/Cmd + P', desc: '导出PDF' }
             ]
         };
         
@@ -414,7 +380,7 @@ function createSlide(title, content) {
                         <li>🎨 专业的演示功能</li>
                         <li>🔧 强大的编辑工具</li>
                         <li>📊 演示数据统计</li>
-                        <li>💾 保存/加载功能</li>
+                        <li>🤖 AI编辑器优化</li>
                     </ul>
                 </div>
                 
@@ -554,9 +520,8 @@ function createSlide(title, content) {
     }
 
     toggleSpeakerMode() {
-        if (window.keyboardController && window.keyboardController.toggleSpeakerMode) {
-            window.keyboardController.toggleSpeakerMode();
-        }
+        console.warn('演讲者模式已移除');
+        alert('演讲者模式暂不支持，建议使用全屏模式 (F11) 获得类似体验');
     }
 
     toggleFullscreen() {
@@ -572,21 +537,18 @@ function createSlide(title, content) {
     }
 
     toggleSearch() {
-        if (window.keyboardController && window.keyboardController.toggleSearch) {
-            window.keyboardController.toggleSearch();
-        }
+        console.warn('搜索功能已移除');
+        alert('搜索功能已移除。使用数字键 1-9 可快速跳转到指定幻灯片。');
     }
 
     savePresentation() {
-        if (window.keyboardController && window.keyboardController.savePresentation) {
-            window.keyboardController.savePresentation();
-        }
+        console.warn('保存功能已移除');
+        alert('保存功能已移除。此模板直接编辑HTML文件，修改即自动保存。');
     }
 
     loadPresentation() {
-        if (window.keyboardController && window.keyboardController.openPresentation) {
-            window.keyboardController.openPresentation();
-        }
+        console.warn('加载功能已移除');
+        alert('加载功能已移除。使用文件夹图标可以切换不同的PPT项目。');
     }
 
     exportToPDF() {

@@ -302,13 +302,26 @@
     
     .control-left,
     .control-right {
-        max-width: 42%;
+        max-width: 45%;
+        flex-wrap: wrap;
     }
     
     .control-btn {
-        width: 28px;
-        height: 28px;
-        padding: var(--spacing-xs);
+        width: 26px;
+        height: 26px;
+        padding: 2px;
+        font-size: 11px;
+    }
+    
+    .control-center {
+        flex: 0 1 auto;
+        min-width: 100px;
+    }
+    
+    .control-center h2 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 

@@ -163,41 +163,16 @@ class KeyboardController {
 
     handleCtrlShortcuts(key, event) {
         switch (key) {
-            case 'KeyS':
-                event.preventDefault();
-                this.savePresentation();
-                this.showKeyboardFeedback('保存');
-                break;
-            case 'KeyO':
-                event.preventDefault();
-                this.openPresentation();
-                this.showKeyboardFeedback('打开');
-                break;
+
+
             case 'KeyP':
                 event.preventDefault();
                 exportToPDF();
                 this.showKeyboardFeedback('打印');
                 break;
-            case 'KeyN':
-                event.preventDefault();
-                this.newPresentation();
-                this.showKeyboardFeedback('新建');
-                break;
-            case 'KeyF':
-                event.preventDefault();
-                this.toggleSearch();
-                this.showKeyboardFeedback('搜索');
-                break;
-            case 'KeyZ':
-                event.preventDefault();
-                this.undo();
-                this.showKeyboardFeedback('撤销');
-                break;
-            case 'KeyY':
-                event.preventDefault();
-                this.redo();
-                this.showKeyboardFeedback('重做');
-                break;
+
+
+
         }
     }
 
@@ -336,136 +311,11 @@ class KeyboardController {
         }
     }
 
-    // 搜索功能
-    toggleSearch() {
-        let searchBox = document.getElementById('search-box');
-        if (!searchBox) {
-            searchBox = document.createElement('div');
-            searchBox.id = 'search-box';
-            searchBox.className = 'search-box';
-            searchBox.innerHTML = `
-                <input type="text" placeholder="搜索幻灯片..." id="search-input">
-                <button onclick="keyboardController.hideSearch()">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            document.body.appendChild(searchBox);
-            
-            // 绑定搜索事件
-            const searchInput = searchBox.querySelector('#search-input');
-            searchInput.addEventListener('input', (e) => {
-                this.performSearch(e.target.value);
-            });
-            
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    this.performSearch(e.target.value);
-                } else if (e.key === 'Escape') {
-                    this.hideSearch();
-                }
-            });
-        }
+    // 搜索功能已移除
 
-        if (searchBox.style.display === 'block') {
-            this.hideSearch();
-        } else {
-            searchBox.style.display = 'block';
-            searchBox.querySelector('#search-input').focus();
-        }
-    }
+    // 文件操作功能已移除（直接编辑HTML文件更简单）
 
-    hideSearch() {
-        const searchBox = document.getElementById('search-box');
-        if (searchBox) {
-            searchBox.style.display = 'none';
-        }
-    }
-
-    performSearch(query) {
-        // 实现搜索逻辑
-        if (!query) return;
-        
-        // 这里可以添加搜索逻辑
-        console.log('Searching for:', query);
-    }
-
-    // 保存演示文稿
-    savePresentation() {
-        const data = {
-            config: PPTConfig,
-            state: PPTState,
-            timestamp: new Date().toISOString()
-        };
-        
-        const blob = new Blob([JSON.stringify(data, null, 2)], {
-            type: 'application/json'
-        });
-        
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'presentation.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    // 打开演示文稿
-    openPresentation() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        this.loadPresentation(data);
-                    } catch (error) {
-                        alert('文件格式错误');
-                    }
-                };
-                reader.readAsText(file);
-            }
-        };
-        input.click();
-    }
-
-    loadPresentation(data) {
-        // 加载演示文稿数据
-        if (data.config) {
-            Object.assign(PPTConfig, data.config);
-        }
-        if (data.state) {
-            Object.assign(PPTState, data.state);
-        }
-        
-        // 重新初始化
-        initializePPT();
-        this.showKeyboardFeedback('演示文稿已加载');
-    }
-
-    // 新建演示文稿
-    newPresentation() {
-        if (confirm('确定要新建演示文稿吗？当前内容将丢失。')) {
-            location.reload();
-        }
-    }
-
-    // 撤销操作
-    undo() {
-        // 实现撤销逻辑
-        console.log('Undo operation');
-    }
-
-    // 重做操作
-    redo() {
-        // 实现重做逻辑
-        console.log('Redo operation');
-    }
+    // 撤销重做功能已移除（不适用于直接编辑HTML文件的场景）
 
     // 切换演示模式
     togglePresentationMode() {
@@ -596,38 +446,7 @@ const keyboardFeedbackStyle = `
         opacity: 0.7;
     }
     
-    .search-box {
-        position: fixed;
-        top: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--card-background);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 16px;
-        box-shadow: var(--shadow-lg);
-        display: none;
-        z-index: 1000;
-        min-width: 300px;
-    }
-    
-    .search-box input {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid var(--border-color);
-        border-radius: 4px;
-        font-size: 14px;
-        margin-bottom: 8px;
-    }
-    
-    .search-box button {
-        float: right;
-        padding: 4px 8px;
-        background: var(--surface-color);
-        border: 1px solid var(--border-color);
-        border-radius: 4px;
-        cursor: pointer;
-    }
+
     
     @media (max-width: 768px) {
         .keyboard-feedback {
@@ -639,12 +458,7 @@ const keyboardFeedbackStyle = `
         
 
         
-        .search-box {
-            left: 10px;
-            right: 10px;
-            transform: none;
-            min-width: auto;
-        }
+
     }
 `;
 
