@@ -549,67 +549,7 @@ button {
 }
 
 /* ===== 控制栏样式 ===== */
-.control-bar {
-    height: var(--control-bar-height);
-    background-color: var(--background-color);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 var(--spacing-lg);
-    z-index: var(--z-control-bar);
-}
-
-.control-left,
-.control-right {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    flex-shrink: 0;
-    max-width: 35%;
-}
-
-.control-center {
-    flex: 1;
-    text-align: center;
-}
-
-.control-center h2 {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    margin: 0;
-}
-
-.control-btn {
-    padding: var(--spacing-sm);
-    border-radius: var(--radius-md);
-    color: var(--text-secondary);
-    transition: all var(--duration-fast) ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-}
-
-.control-btn:hover {
-    background-color: var(--surface-color);
-    color: var(--primary-color);
-}
-
-.control-btn:active {
-    transform: scale(0.95);
-}
-
-.slide-counter {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: var(--text-secondary);
-    margin-left: var(--spacing-md);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background-color: var(--surface-color);
-    border-radius: var(--radius-md);
-}
+/* （已移除旧控制栏与重复 slide-counter 定义） */
 
 /* ===== 幻灯片容器 ===== */
 .slide-container {
