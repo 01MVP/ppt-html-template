@@ -1281,9 +1281,10 @@ kbd {
 
 /* ===== PPT画廊样式 ===== */
 .ppt-gallery .modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
-    width: 1200px;
+    max-width: 95vw;
+    max-height: 80vh;
+    width: 1400px;
+    height: 600px;
 }
 
 .gallery-intro {
@@ -1294,9 +1295,12 @@ kbd {
 
 .ppt-gallery-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
+    height: 420px;
+    padding: var(--spacing-md);
 }
 
 .ppt-card {
@@ -1307,9 +1311,9 @@ kbd {
     transition: all var(--duration-fast) ease;
     background-color: var(--background-color);
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: stretch;
-    min-height: 135px;
+    min-height: 120px;
 }
 
 .ppt-card:hover {
@@ -1319,14 +1323,14 @@ kbd {
 }
 
 .ppt-preview {
-    width: 240px;
-    height: 135px;
+    width: 100%;
+    height: 100px;
     overflow: hidden;
     background-color: var(--surface-color);
     position: relative;
     flex-shrink: 0;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .preview-frame {
@@ -1334,14 +1338,14 @@ kbd {
     height: 100%;
     border: none;
     pointer-events: none;
-    transform: scale(0.3);
+    transform: scale(0.25);
     transform-origin: top left;
-    width: 333.33%;
-    height: 333.33%;
+    width: 400%;
+    height: 400%;
 }
 
 .ppt-info {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -1350,18 +1354,20 @@ kbd {
 
 .ppt-info h4 {
     margin: 0 0 var(--spacing-xs) 0;
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-md);
     font-weight: 600;
     color: var(--text-primary);
     line-height: 1.3;
+    text-align: center;
 }
 
 .ppt-info p {
-    margin: 0 0 var(--spacing-sm) 0;
+    margin: 0 0 var(--spacing-xs) 0;
     color: var(--text-secondary);
-    font-size: var(--font-size-base);
-    line-height: 1.5;
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
     flex: 1;
+    text-align: center;
 }
 
 .ppt-badge {
@@ -1372,7 +1378,7 @@ kbd {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    align-self: flex-start;
+    align-self: center;
     margin-top: var(--spacing-xs);
 }
 
@@ -1437,34 +1443,36 @@ kbd {
 @media (max-width: 768px) {
     .ppt-gallery .modal-content {
         width: 95vw;
+        height: 80vh;
         margin: var(--spacing-md);
     }
     
     .ppt-gallery-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(5, 1fr);
         gap: var(--spacing-sm);
-    }
-    
-    .ppt-card {
-        flex-direction: column;
-        min-height: auto;
-    }
-    
-    .ppt-preview {
-        width: 100%;
-        height: 140px;
-    }
-    
-    .ppt-info {
+        height: auto;
         padding: var(--spacing-sm);
     }
     
+    .ppt-card {
+        min-height: 100px;
+    }
+    
+    .ppt-preview {
+        height: 70px;
+    }
+    
+    .ppt-info {
+        padding: var(--spacing-xs);
+    }
+    
     .ppt-info h4 {
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-sm);
     }
     
     .ppt-info p {
-        font-size: var(--font-size-sm);
+        font-size: var(--font-size-xs);
     }
     
     .custom-folder-input {
@@ -1479,21 +1487,30 @@ kbd {
 
 /* 中等屏幕优化 */
 @media (min-width: 769px) and (max-width: 1024px) {
-    .ppt-preview {
-        width: 200px;
-        height: 112px;
+    .ppt-gallery .modal-content {
+        width: 90vw;
+        height: 500px;
+    }
+    
+    .ppt-gallery-grid {
+        height: 350px;
+        gap: var(--spacing-md);
     }
     
     .ppt-card {
-        min-height: 112px;
+        min-height: 100px;
+    }
+    
+    .ppt-preview {
+        height: 80px;
     }
     
     .ppt-info h4 {
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-sm);
     }
     
     .ppt-info p {
-        font-size: var(--font-size-sm);
+        font-size: var(--font-size-xs);
     }
 }
 
