@@ -306,7 +306,7 @@ function updateActiveNavigation() {
 
 function nextSlide() {
     // 如果有重新排列的幻灯片顺序，使用自定义顺序
-    if (window.sidebarThumbnails && window.sidebarThumbnails.slideOrder) {
+    if (window.sidebarThumbnails && window.sidebarThumbnails.slideOrder && window.sidebarThumbnails.slideOrder.length > 0) {
         const currentOrder = window.sidebarThumbnails.slideOrder;
         const currentPos = currentOrder.indexOf(PPTState.currentSlide);
         
@@ -314,7 +314,7 @@ function nextSlide() {
             const nextPos = currentPos + 1;
             if (nextPos < currentOrder.length) {
                 goToSlide(currentOrder[nextPos]);
-            } else if (PPTState.settings.loop) {
+            } else if (PPTState.settings && PPTState.settings.loop) {
                 goToSlide(currentOrder[0]);
             }
             return;
@@ -325,14 +325,14 @@ function nextSlide() {
     const nextIndex = PPTState.currentSlide + 1;
     if (nextIndex < PPTState.totalSlides) {
         goToSlide(nextIndex);
-    } else if (PPTState.settings.loop) {
+    } else if (PPTState.settings && PPTState.settings.loop) {
         goToSlide(0);
     }
 }
 
 function prevSlide() {
     // 如果有重新排列的幻灯片顺序，使用自定义顺序
-    if (window.sidebarThumbnails && window.sidebarThumbnails.slideOrder) {
+    if (window.sidebarThumbnails && window.sidebarThumbnails.slideOrder && window.sidebarThumbnails.slideOrder.length > 0) {
         const currentOrder = window.sidebarThumbnails.slideOrder;
         const currentPos = currentOrder.indexOf(PPTState.currentSlide);
         
@@ -340,7 +340,7 @@ function prevSlide() {
             const prevPos = currentPos - 1;
             if (prevPos >= 0) {
                 goToSlide(currentOrder[prevPos]);
-            } else if (PPTState.settings.loop) {
+            } else if (PPTState.settings && PPTState.settings.loop) {
                 goToSlide(currentOrder[currentOrder.length - 1]);
             }
             return;
@@ -351,7 +351,7 @@ function prevSlide() {
     const prevIndex = PPTState.currentSlide - 1;
     if (prevIndex >= 0) {
         goToSlide(prevIndex);
-    } else if (PPTState.settings.loop) {
+    } else if (PPTState.settings && PPTState.settings.loop) {
         goToSlide(PPTState.totalSlides - 1);
     }
 }

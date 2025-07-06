@@ -290,6 +290,9 @@ class SidebarThumbnailManager {
         this.saveSettings();
         this.renderNavigation();
         
+        // 确保全局状态同步
+        this.syncGlobalState();
+        
         // 显示提示
         this.showNotification('已重新排序幻灯片');
     }
@@ -325,7 +328,22 @@ class SidebarThumbnailManager {
             this.slideOrder = this.slides.map((_, index) => index);
             this.saveSettings();
             this.renderNavigation();
+            this.syncGlobalState();
             this.showNotification('已重置幻灯片顺序');
+        }
+    }
+
+    // 同步全局状态
+    syncGlobalState() {
+        // 确保全局PPTState能够正确获取当前的slide order
+        if (window.PPTState) {
+            // 通知main.js更新状态
+            window.PPTState.customSlideOrder = this.slideOrder;
+        }
+        
+        // 确保当前幻灯片在新顺序中的位置正确
+        if (window.PPTState && window.PPTState.currentSlide !== undefined) {
+            this.updateActiveSlide();
         }
     }
 
