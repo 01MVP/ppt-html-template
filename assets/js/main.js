@@ -1090,7 +1090,40 @@ async function loadPPTGallery() {
     
     // 如果没有找到项目，显示提示
     if (pptProjects.length === 0) {
-        galleryGrid.innerHTML = '<div class="no-projects-message">暂无PPT项目，请在 ppt/ 文件夹中创建项目</div>';
+        // 检查是否有 ppt-list.js 配置文件
+        if (typeof window.pptProjects === 'undefined') {
+            galleryGrid.innerHTML = `
+                <div class="error-message">
+                    <h4>⚠️ 未找到 ppt-list.js 配置文件</h4>
+                    <p>请在项目根目录创建 <code>ppt-list.js</code> 文件，并添加以下内容：</p>
+                    <pre><code>window.pptProjects = {
+    'default': {
+        name: '默认演示',
+        description: 'HTML PPT模板介绍',
+        badge: '默认',
+        badgeClass: 'default',
+        files: ['01-cover.html', '02-features.html', '03-thanks.html']
+    },
+    'my-presentation': {
+        name: '我的演示',
+        description: '自定义演示文稿',
+        badge: '自定义',
+        badgeClass: 'custom',
+        files: ['01-cover.html', '02-content.html', '03-thanks.html']
+    }
+};</code></pre>
+                    <p>查看 README.md 了解如何使用 AI 编辑器创建 PPT 项目。</p>
+                </div>
+            `;
+        } else {
+            galleryGrid.innerHTML = `
+                <div class="no-projects-message">
+                    <h4>🔍 未发现PPT项目</h4>
+                    <p>请检查 <code>ppt-list.js</code> 中配置的项目信息是否正确。</p>
+                    <p>查看 README.md 了解如何使用 AI 编辑器创建 PPT 项目。</p>
+                </div>
+            `;
+        }
     }
 }
 
@@ -1098,61 +1131,39 @@ async function loadPPTGallery() {
 async function discoverPPTProjects() {
     const projects = [];
     
-    // 候选项目列表，包含预期的预览文件
-    const candidateProjects = [
-        {
-            path: 'ppt/default',
-            name: '默认演示',
-            description: 'HTML PPT模板介绍',
-            badge: '默认',
-            badgeClass: 'default',
-            expectedFiles: ['01-welcome.html', '02-features.html', '03-how-to-use.html']
-        },
-        {
-            path: 'ppt/examples/neobrutalism',
-            name: '新野兽派',
-            description: '大胆色彩、强视觉冲击',
-            badge: '创意',
-            badgeClass: 'creative',
-            expectedFiles: ['01-cover.html', '02-content.html', '03-thanks.html']
-        },
-        {
-            path: 'ppt/examples/minimal',
-            name: '极简主义',
-            description: '简洁优雅、专业商务',
-            badge: '商务',
-            badgeClass: 'professional',
-            expectedFiles: ['01-cover.html', '02-content.html', '03-thanks.html']
-        },
-        {
-            path: 'ppt/html-ppt-introduction',
-            name: 'HTML PPT 介绍',
-            description: '全面介绍HTML PPT模板功能',
-            badge: '推荐',
-            badgeClass: 'recommended',
-            expectedFiles: ['01-cover.html', '02-features.html', '03-quickstart.html', '04-operation.html', '05-examples.html', '06-tech.html', '07-thanks.html']
-        }
-    ];
+    // 检查是否有 ppt-list.js 配置文件
+    if (typeof window.pptProjects === 'undefined') {
+        console.warn('未找到 ppt-list.js 配置文件');
+        return [];
+    }
     
-    // 检测每个候选项目是否存在
-    for (const candidate of candidateProjects) {
+    // 从 ppt-list.js 配置文件读取项目列表
+    for (const [projectPath, projectConfig] of Object.entries(window.pptProjects)) {
         try {
-            const previewFile = await findFirstValidFile(candidate.path, candidate.expectedFiles);
-            if (previewFile) {
-                projects.push({
-                    ...candidate,
-                    previewFile: previewFile
-                });
-                console.log(`找到项目: ${candidate.name} - 预览文件: ${previewFile}`);
-            } else {
-                console.log(`项目 ${candidate.name} 的文件不可访问`);
-            }
+            const fullPath = `ppt/${projectPath}`;
+            
+            // 使用配置文件中的第一个文件作为预览
+            const previewFile = projectConfig.files && projectConfig.files.length > 0 
+                ? `${fullPath}/${projectConfig.files[0]}`
+                : `${fullPath}/01-cover.html`;
+            
+            projects.push({
+                path: fullPath,
+                name: projectConfig.name || projectPath.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                description: projectConfig.description || '自定义PPT项目',
+                badge: projectConfig.badge || '自定义',
+                badgeClass: projectConfig.badgeClass || 'custom',
+                files: projectConfig.files || ['01-cover.html', '02-content.html', '03-thanks.html'],
+                previewFile: previewFile
+            });
+            
+            console.log(`加载项目: ${projectConfig.name} - 预览文件: ${previewFile}`);
         } catch (error) {
-            console.log(`项目 ${candidate.path} 检测失败:`, error);
+            console.log(`项目 ${projectPath} 加载失败:`, error);
         }
     }
     
-    console.log(`总共发现 ${projects.length} 个项目`);
+    console.log(`总共加载 ${projects.length} 个项目`);
     return projects;
 }
 
@@ -1242,21 +1253,22 @@ async function selectFolder(folderPath) {
 
 // 动态发现项目文件
 async function discoverProjectFiles(projectPath) {
-    // 预定义已知项目的文件列表
-    const knownProjects = {
-        'ppt/default': ['01-welcome.html', '02-features.html', '03-how-to-use.html'],
-        'ppt/examples/neobrutalism': ['01-cover.html', '02-content.html', '03-thanks.html'],
-        'ppt/examples/minimal': ['01-cover.html', '02-content.html', '03-thanks.html'],
-        'ppt/html-ppt-introduction': ['01-cover.html', '02-features.html', '03-quickstart.html', '04-operation.html', '05-examples.html', '06-tech.html', '07-thanks.html']
-    };
-    
-    // 如果是已知项目，直接返回预定义的文件列表
-    if (knownProjects[projectPath]) {
-        console.log(`使用预定义的文件列表: ${projectPath}`, knownProjects[projectPath]);
-        return knownProjects[projectPath];
+    // 检查是否有 ppt-list.js 配置文件
+    if (typeof window.pptProjects === 'undefined') {
+        console.warn('未找到 ppt-list.js 配置文件，使用默认文件列表');
+        return ['01-cover.html', '02-content.html', '03-thanks.html'];
     }
     
-    // 对于未知项目，返回常见的文件名模式
+    // 从路径中提取项目键（去掉 'ppt/' 前缀）
+    const projectKey = projectPath.replace(/^ppt\//, '');
+    
+    // 从配置文件中获取文件列表
+    if (window.pptProjects[projectKey] && window.pptProjects[projectKey].files) {
+        console.log(`从配置文件获取文件列表: ${projectPath}`, window.pptProjects[projectKey].files);
+        return window.pptProjects[projectKey].files;
+    }
+    
+    // 对于未知项目，返回默认文件列表
     const defaultFiles = [
         '01-cover.html',
         '02-content.html', 

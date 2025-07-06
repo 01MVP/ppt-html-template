@@ -137,7 +137,7 @@
             <!-- 幻灯片展示区域 -->
             <div class="slide-container">
                 <div class="slide-viewport" id="slide-viewport">
-                    <iframe id="slide-frame" src="slides/01-welcome.html" frameborder="0"></iframe>
+                    <iframe id="slide-frame" src="ppt/default/01-cover.html" frameborder="0"></iframe>
                 </div>
                 
                 <!-- 幻灯片计数器覆盖层 -->
@@ -217,41 +217,7 @@
                 
                 <!-- PPT画廊网格 -->
                 <div class="ppt-gallery-grid" id="ppt-gallery-grid">
-                    <!-- 默认PPT -->
-                    <div class="ppt-card" onclick="selectFolder('ppt/default')">
-                        <div class="ppt-preview">
-                            <iframe src="ppt/default/01-welcome.html" class="preview-frame"></iframe>
-                        </div>
-                        <div class="ppt-info">
-                            <h4>默认演示</h4>
-                            <p>HTML PPT模板介绍</p>
-                            <span class="ppt-badge default">默认</span>
-                        </div>
-                    </div>
-                    
-                    <!-- 新野兽派风格 -->
-                    <div class="ppt-card" onclick="selectFolder('ppt/examples/neobrutalism')">
-                        <div class="ppt-preview">
-                            <iframe src="ppt/examples/neobrutalism/01-cover.html" class="preview-frame"></iframe>
-                        </div>
-                        <div class="ppt-info">
-                            <h4>新野兽派</h4>
-                            <p>大胆色彩、强视觉冲击</p>
-                            <span class="ppt-badge creative">创意</span>
-                        </div>
-                    </div>
-                    
-                    <!-- 极简风格 -->
-                    <div class="ppt-card" onclick="selectFolder('ppt/examples/minimal')">
-                        <div class="ppt-preview">
-                            <iframe src="ppt/examples/minimal/01-cover.html" class="preview-frame"></iframe>
-                        </div>
-                        <div class="ppt-info">
-                            <h4>极简主义</h4>
-                            <p>简洁优雅、专业商务</p>
-                            <span class="ppt-badge professional">商务</span>
-                        </div>
-                    </div>
+                    <!-- 内容将通过JavaScript动态生成 -->
                 </div>
                 
                 <!-- 自定义文件夹输入 -->
@@ -284,6 +250,7 @@
 
 
     <!-- JavaScript 文件 -->
+    <script src="ppt-list.js"></script>
     <script src="config.js"></script>
     <script src="assets/js/viewport.js"></script>
     <script src="assets/js/main.js"></script>

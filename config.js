@@ -16,23 +16,16 @@ const PPTConfig = {
     // 当前主题 (apple, minimal, brutalist)
     theme: "apple",
     
-    // 幻灯片文件夹配置
+    // 幻灯片文件夹配置（动态从 ppt-list.js 加载）
     slideFiles: {
-        // PPT文件夹路径
+        // PPT文件夹路径（由项目选择器动态设置）
         basePath: "ppt/default/",
-        
-        // 自动检测ppt文件夹下的html文件
-        autoDetect: true,
         
         // 文件排序方式：'name' | 'date' | 'custom'
         sortBy: 'name',
         
-        // 幻灯片文件列表（按顺序加载）
-        files: [
-            '01-welcome.html',
-            '02-features.html', 
-            '03-how-to-use.html'
-        ],
+        // 幻灯片文件列表（动态加载）
+        files: [],
         
         // 幻灯片标题提取方式
         titleExtraction: {
@@ -45,24 +38,8 @@ const PPTConfig = {
         }
     },
     
-    // 幻灯片信息 (动态加载，这里作为默认结构)
-    slides: [
-        {
-            id: "welcome",
-            title: "HTML PPT 模板",
-            layout: "cover"
-        },
-        {
-            id: "features",
-            title: "强大功能",
-            layout: "content"
-        },
-        {
-            id: "how-to-use",
-            title: "快速上手",
-            layout: "content"
-        }
-    ],
+    // 幻灯片信息 (动态加载)
+    slides: [],
     
     // 演示设置
     settings: {
