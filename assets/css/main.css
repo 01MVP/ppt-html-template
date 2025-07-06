@@ -288,8 +288,6 @@ button {
     border-left-color: var(--primary-color);
 }
 
-
-
 .nav-item-content {
     display: flex;
     align-items: center;
@@ -339,8 +337,6 @@ button {
     font-weight: 400;
 }
 
-
-
 .nav-item.active {
     background-color: var(--background-color);
     border-left-color: var(--primary-color);
@@ -378,8 +374,6 @@ button {
 .drag-indicator.visible {
     opacity: 1;
 }
-
-
 
 /* ===== 主内容区域 ===== */
 .main-content {
@@ -1826,8 +1820,6 @@ button:focus,
     height: min(var(--container-height), calc(var(--container-width) * 9 / 16));
 }
 
-
-
 /* ===== 全屏模式样式 ===== */
 .fullscreen-mode .sidebar {
     display: none !important;
@@ -2118,4 +2110,137 @@ button:focus,
     color: #28a745;
     font-weight: bold;
     margin-right: var(--spacing-xs);
+}
+
+/* ===== 侧边栏新功能区域样式 ===== */
+.sidebar-functions,
+.sidebar-zoom,
+.sidebar-navigation {
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.sidebar-functions h4,
+.sidebar-zoom h4,
+.sidebar-navigation h4 {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-md) 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 功能按钮样式 */
+.function-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.sidebar-function-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--surface-color);
+    color: var(--text-secondary);
+    transition: all var(--duration-fast) ease;
+    width: 100%;
+    text-align: left;
+    font-size: var(--font-size-sm);
+}
+
+.sidebar-function-btn:hover {
+    background: var(--background-color);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateX(2px);
+}
+
+.sidebar-function-btn i {
+    width: 20px;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.sidebar-function-btn span {
+    flex: 1;
+}
+
+/* 缩放控制器样式 */
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xs);
+}
+
+.zoom-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--surface-color);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--duration-fast) ease;
+    cursor: pointer;
+}
+
+.zoom-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+.zoom-display {
+    flex: 1;
+    text-align: center;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 50px;
+}
+
+/* 侧边栏导航区域调整 */
+.sidebar-navigation {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: var(--spacing-lg);
+}
+
+.sidebar-navigation .slide-navigation {
+    padding: 0;
+    margin-top: var(--spacing-sm);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .sidebar-functions,
+    .sidebar-zoom,
+    .sidebar-navigation {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .sidebar-function-btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+    
+    .zoom-btn {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .zoom-display {
+        font-size: var(--font-size-xs);
+    }
 }

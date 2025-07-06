@@ -27,6 +27,13 @@ function initializePPT() {
     PPTState.settings = PPTConfig.settings;
     PPTState.currentTheme = PPTConfig.theme;
     
+    // 初始化sidebar状态
+    PPTState.isSidebarOpen = false;
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.classList.remove('open');
+    }
+    
     // 恢复用户选择的文件夹
     restoreUserFolder();
     
@@ -488,12 +495,35 @@ function playSlideAnimation(slideElement) {
 // 侧边栏管理
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.sidebar-toggle');
+    const mainToggleBtns = document.querySelectorAll('[onclick="toggleSidebar()"]');
+    
     PPTState.isSidebarOpen = !PPTState.isSidebarOpen;
     
     if (PPTState.isSidebarOpen) {
         sidebar.classList.add('open');
+        // Sidebar内的关闭按钮显示X
+        if (toggleBtn) {
+            toggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+        }
+        // 主控制栏的菜单按钮显示X
+        mainToggleBtns.forEach(btn => {
+            if (btn !== toggleBtn && btn.closest('.control-bar')) {
+                btn.innerHTML = '<i class="fas fa-times"></i>';
+            }
+        });
     } else {
         sidebar.classList.remove('open');
+        // Sidebar内的关闭按钮显示X
+        if (toggleBtn) {
+            toggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+        }
+        // 主控制栏的菜单按钮显示菜单图标
+        mainToggleBtns.forEach(btn => {
+            if (btn !== toggleBtn && btn.closest('.control-bar')) {
+                btn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
     }
 }
 
@@ -956,13 +986,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 缩放控制器功能
 function initializeZoomController() {
+    // 新的sidebar缩放控制器
+    const sidebarZoomOutBtn = document.getElementById('sidebar-zoom-out');
+    const sidebarZoomInBtn = document.getElementById('sidebar-zoom-in');
+    const sidebarZoomResetBtn = document.getElementById('sidebar-zoom-reset');
+    const sidebarZoomDisplay = document.getElementById('sidebar-zoom-display');
+    
+    // 兼容旧的缩放控制器（如果存在）
     const zoomOutBtn = document.getElementById('zoom-out');
     const zoomInBtn = document.getElementById('zoom-in');
     const zoomResetBtn = document.getElementById('zoom-reset');
     const zoomDisplay = document.getElementById('zoom-display');
     
-    if (!zoomOutBtn || !zoomInBtn || !zoomResetBtn || !zoomDisplay) {
-        console.warn('缩放控制器元素未找到，跳过初始化');
+    if (!sidebarZoomOutBtn || !sidebarZoomInBtn || !sidebarZoomResetBtn || !sidebarZoomDisplay) {
+        console.warn('Sidebar缩放控制器元素未找到，跳过初始化');
         return;
     }
     
@@ -971,23 +1008,43 @@ function initializeZoomController() {
     window.PPTState.userScaleMultiplier = savedScale ? parseFloat(savedScale) : 1.0;
     updateZoomDisplay();
     
-    // 缩小按钮
-    zoomOutBtn.addEventListener('click', () => {
+    // Sidebar缩小按钮
+    sidebarZoomOutBtn.addEventListener('click', () => {
         window.PPTState.userScaleMultiplier = Math.max(0.2, window.PPTState.userScaleMultiplier - 0.1);
         updateZoomAndSave();
     });
     
-    // 放大按钮
-    zoomInBtn.addEventListener('click', () => {
+    // Sidebar放大按钮
+    sidebarZoomInBtn.addEventListener('click', () => {
         window.PPTState.userScaleMultiplier = Math.min(3.0, window.PPTState.userScaleMultiplier + 0.1);
         updateZoomAndSave();
     });
     
-    // 重置按钮
-    zoomResetBtn.addEventListener('click', () => {
+    // Sidebar重置按钮
+    sidebarZoomResetBtn.addEventListener('click', () => {
         window.PPTState.userScaleMultiplier = 1.0;
         updateZoomAndSave();
     });
+    
+    // 兼容旧控制器
+    if (zoomOutBtn) {
+        zoomOutBtn.addEventListener('click', () => {
+            window.PPTState.userScaleMultiplier = Math.max(0.2, window.PPTState.userScaleMultiplier - 0.1);
+            updateZoomAndSave();
+        });
+    }
+    if (zoomInBtn) {
+        zoomInBtn.addEventListener('click', () => {
+            window.PPTState.userScaleMultiplier = Math.min(3.0, window.PPTState.userScaleMultiplier + 0.1);
+            updateZoomAndSave();
+        });
+    }
+    if (zoomResetBtn) {
+        zoomResetBtn.addEventListener('click', () => {
+            window.PPTState.userScaleMultiplier = 1.0;
+            updateZoomAndSave();
+        });
+    }
     
     function updateZoomAndSave() {
         updateZoomDisplay();
@@ -1002,7 +1059,14 @@ function initializeZoomController() {
     
     function updateZoomDisplay() {
         const percentage = Math.round(window.PPTState.userScaleMultiplier * 100);
-        zoomDisplay.textContent = `${percentage}%`;
+        // 更新sidebar显示
+        if (sidebarZoomDisplay) {
+            sidebarZoomDisplay.textContent = `${percentage}%`;
+        }
+        // 兼容旧显示
+        if (zoomDisplay) {
+            zoomDisplay.textContent = `${percentage}%`;
+        }
     }
 }
 

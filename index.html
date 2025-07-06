@@ -40,19 +40,66 @@
             <div class="sidebar-header">
                 <h3>HTML PPT</h3>
                 <button class="sidebar-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
             
-            <div class="sidebar-controls">
-                <button class="sidebar-control-btn custom-tooltip" onclick="resetSlideOrder()" data-tooltip="恢复默认顺序">
-                    <i class="fas fa-undo"></i>
-                    <span>重置顺序</span>
-                </button>
+            <!-- 功能按钮区域 -->
+            <div class="sidebar-functions">
+                <h4>功能面板</h4>
+                <div class="function-buttons">
+                    <button class="sidebar-function-btn" onclick="showFolderSelector()" title="选择PPT文件夹">
+                        <i class="fas fa-folder-open"></i>
+                        <span>切换项目</span>
+                    </button>
+                    <button class="sidebar-function-btn" onclick="showFunctionPanel()" title="功能面板 (Ctrl+/)">
+                        <i class="fas fa-cogs"></i>
+                        <span>功能中心</span>
+                    </button>
+                    <button class="sidebar-function-btn" onclick="showPresentationTimer()" title="演示计时器 (Alt+T)">
+                        <i class="fas fa-clock"></i>
+                        <span>计时器</span>
+                    </button>
+                    <button class="sidebar-function-btn" onclick="toggleFullscreen()" title="全屏 (F11)">
+                        <i class="fas fa-expand"></i>
+                        <span>全屏</span>
+                    </button>
+                    <button class="sidebar-function-btn" onclick="exportToPDF()" title="导出PDF">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>导出PDF</span>
+                    </button>
+                </div>
             </div>
             
-            <div class="slide-navigation" id="slide-navigation">
-                <!-- 导航项将由JavaScript动态生成 -->
+            <!-- 缩放控制区域 -->
+            <div class="sidebar-zoom">
+                <h4>缩放控制</h4>
+                <div class="zoom-controls">
+                    <button id="sidebar-zoom-out" class="zoom-btn" title="缩小">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span id="sidebar-zoom-display" class="zoom-display">100%</span>
+                    <button id="sidebar-zoom-in" class="zoom-btn" title="放大">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button id="sidebar-zoom-reset" class="zoom-btn" title="重置缩放">
+                        <i class="fas fa-home"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 幻灯片导航区域 -->
+            <div class="sidebar-navigation">
+                <h4>幻灯片导航</h4>
+                <div class="sidebar-controls">
+                    <button class="sidebar-control-btn custom-tooltip" onclick="resetSlideOrder()" data-tooltip="恢复默认顺序">
+                        <i class="fas fa-undo"></i>
+                        <span>重置顺序</span>
+                    </button>
+                </div>
+                <div class="slide-navigation" id="slide-navigation">
+                    <!-- 导航项将由JavaScript动态生成 -->
+                </div>
             </div>
         </nav>
 
@@ -61,6 +108,9 @@
             <!-- 控制栏 -->
             <div class="control-bar">
                 <div class="control-left">
+                    <button class="control-btn custom-tooltip" onclick="toggleSidebar()" data-tooltip="打开功能面板">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <button class="control-btn custom-tooltip" onclick="prevSlide()" data-tooltip="上一张 (←)">
                         <i class="fas fa-chevron-left"></i>
                     </button>
@@ -77,21 +127,7 @@
                 </div>
                 
                 <div class="control-right">
-                    <button class="control-btn custom-tooltip" onclick="showFolderSelector()" data-tooltip="选择PPT文件夹">
-                        <i class="fas fa-folder-open"></i>
-                    </button>
-                    <button class="control-btn custom-tooltip" onclick="showFunctionPanel()" data-tooltip="功能面板 (Ctrl+/)">
-                        <i class="fas fa-cogs"></i>
-                    </button>
-                    <button class="control-btn custom-tooltip" onclick="showPresentationTimer()" data-tooltip="演示计时器 (Alt+T)">
-                        <i class="fas fa-clock"></i>
-                    </button>
-                    <button class="control-btn custom-tooltip" onclick="toggleFullscreen()" data-tooltip="全屏 (F11)">
-                        <i class="fas fa-expand"></i>
-                    </button>
-                    <button class="control-btn custom-tooltip" onclick="exportToPDF()" data-tooltip="导出PDF">
-                        <i class="fas fa-file-pdf"></i>
-                    </button>
+                    <!-- 功能按钮已移至侧边栏 -->
                 </div>
             </div>
 
@@ -221,20 +257,7 @@
         </button>
     </div>
     
-    <!-- 缩放控制器 -->
-    <div id="zoom-controller">
-        <div class="zoom-buttons">
-            <button id="zoom-out" class="custom-tooltip" data-tooltip="缩小">−</button>
-            <span id="zoom-display">100%</span>
-            <button id="zoom-in" class="custom-tooltip" data-tooltip="放大">+</button>
-        </div>
-        <button id="zoom-reset" class="custom-tooltip" data-tooltip="重置缩放">⌂</button>
-    </div>
-
-    <!-- 功能面板入口按钮 -->
-    <button class="editor-function-btn custom-tooltip" onclick="showFunctionPanel()" data-tooltip="功能面板 (Ctrl+/)">
-        <i class="fas fa-cogs"></i>
-    </button>
+    <!-- 缩放控制器和功能面板入口已移至侧边栏 -->
 
 
 
