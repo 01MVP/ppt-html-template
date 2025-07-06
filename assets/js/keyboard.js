@@ -140,13 +140,7 @@ class KeyboardController {
             return;
         }
         
-        // 功能面板快捷键
-        if ((event.ctrlKey || event.metaKey) && keyName === '/') {
-            event.preventDefault();
-            this.showFunctionPanel();
-            this.showKeyboardFeedback('功能面板');
-            return;
-        }
+        // 功能面板快捷键已移除，功能已整合到侧边栏
 
         // Alt + 组合键
         if (event.altKey) {
@@ -373,13 +367,7 @@ class KeyboardController {
     }
     
     // 新增功能方法
-    showFunctionPanel() {
-        if (window.functionPanel) {
-            window.functionPanel.show();
-        } else if (window.showFunctionPanel) {
-            window.showFunctionPanel();
-        }
-    }
+    // 功能面板已整合到侧边栏，不再需要独立的功能面板
     
     showPresentationTimer() {
         if (window.showPresentationTimer) {

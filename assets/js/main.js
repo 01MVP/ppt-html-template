@@ -14,7 +14,6 @@ const PPTState = {
     currentSlide: 0,
     totalSlides: 0,
     isFullscreen: false,
-    currentTheme: 'apple',
     isSidebarOpen: false,
     isPresenting: false,
     settings: {},
@@ -25,7 +24,6 @@ const PPTState = {
 function initializePPT() {
     // 获取配置
     PPTState.settings = PPTConfig.settings;
-    PPTState.currentTheme = PPTConfig.theme;
     
     // 初始化sidebar状态 - 默认展开
     PPTState.isSidebarOpen = true;
@@ -54,9 +52,6 @@ function initializePPT() {
     
     // 检查移动端
     checkMobileDevice();
-    
-    // 初始化主题
-    applyTheme(PPTState.currentTheme);
     
     // 初始化slide viewport尺寸
     setTimeout(() => {
@@ -157,54 +152,9 @@ function loadSlideByIndex(index) {
     }
 }
 
-// 解析幻灯片内容
-function parseSlideContent(htmlContent, filename, index) {
-    // 创建临时DOM元素来解析内容
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlContent;
-    
-    // 提取标题
-    let title = `幻灯片 ${index + 1}`;
-    
-    // 从文件名提取标题
-    if (PPTConfig.slideFiles.titleExtraction.fromFilename) {
-        const nameWithoutExt = filename.replace('.html', '');
-        const parts = nameWithoutExt.split('-');
-        if (parts.length > 1) {
-            title = parts.slice(1).join('-').replace(/[-_]/g, ' ');
-        }
-    }
-    
-    // 从内容中提取标题
-    if (PPTConfig.slideFiles.titleExtraction.fromContent) {
-        const h1 = tempDiv.querySelector('h1');
-        const h2 = tempDiv.querySelector('h2');
-        if (h1) {
-            title = h1.textContent.trim();
-        } else if (h2) {
-            title = h2.textContent.trim();
-        }
-    }
-    
-    return {
-        id: `slide-${index}`,
-        title: title,
-        content: tempDiv.innerHTML,
-        filename: filename
-    };
-}
 
-// 生成幻灯片HTML
-function generateSlidesHTML(slides) {
-    return slides.map((slide, index) => {
-        const activeClass = index === 0 ? 'active' : '';
-        return `
-            <div class="slide ${activeClass}" data-slide="${index}" data-title="${slide.title}">
-                ${slide.content}
-            </div>
-        `;
-    }).join('');
-}
+
+
 
 // 更新幻灯片信息
 function updateSlidesInfo(slidesData) {
@@ -220,27 +170,9 @@ function updateSlidesInfo(slidesData) {
     }
 }
 
-// 更新侧边栏导航（现在由sidebar-thumbnails.js接管）
-function updateSidebarNavigation() {
-    // 此函数已被新的侧边栏缩略图管理器替代
-    // 如果新的管理器还未初始化，则尝试通知它
-    if (window.sidebarThumbnails) {
-        window.sidebarThumbnails.updateSidebarNavigation();
-    }
-}
 
-// 重新绑定导航事件
-function bindNavigationEvents() {
-    // 清除现有的导航事件监听器
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.replaceWith(item.cloneNode(true));
-    });
-    
-    // 重新绑定导航事件
-    document.querySelectorAll('.nav-item').forEach((item, index) => {
-        item.addEventListener('click', () => goToSlide(index));
-    });
-}
+
+
 
 // 显示错误信息
 function showErrorMessage(message) {
@@ -310,11 +242,6 @@ function showErrorMessage(message) {
 
 // 绑定事件监听器
 function bindEvents() {
-    // 导航按钮
-    document.querySelectorAll('.nav-item').forEach((item, index) => {
-        item.addEventListener('click', () => goToSlide(index));
-    });
-    
     // 全屏状态监听
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
@@ -494,20 +421,7 @@ function updateSlideTitle() {
 // 更新演讲者备注
 
 
-// 播放幻灯片动画
-function playSlideAnimation(slideElement) {
-    const content = slideElement.querySelector('.slide-content');
-    if (content) {
-        content.style.opacity = '0';
-        content.style.transform = 'translateY(20px)';
-        
-        setTimeout(() => {
-            content.style.transition = 'all 0.5s ease-out';
-            content.style.opacity = '1';
-            content.style.transform = 'translateY(0)';
-        }, 50);
-    }
-}
+
 
 // 侧边栏管理
 function toggleSidebar() {
@@ -637,51 +551,7 @@ function handleFullscreenChange() {
     }
 }
 
-// 主题管理
-function switchTheme(themeName) {
-    if (PPTConfig.themes[themeName]) {
-        PPTState.currentTheme = themeName;
-        applyTheme(themeName);
-        updateThemePreview();
-    }
-}
 
-function applyTheme(themeName) {
-    const themeConfig = PPTConfig.themes[themeName];
-    if (!themeConfig) return;
-    
-    const themeLink = document.getElementById('theme-css');
-    if (themeLink) {
-        themeLink.href = themeConfig.cssFile;
-    }
-    
-    // 更新CSS变量
-    document.documentElement.style.setProperty('--primary-color', themeConfig.primaryColor);
-    document.documentElement.style.setProperty('--background-color', themeConfig.backgroundColor);
-    document.documentElement.style.setProperty('--text-primary', themeConfig.textColor);
-    
-    console.log(`Theme switched to: ${themeName}`);
-}
-
-function toggleTheme() {
-    const themes = Object.keys(PPTConfig.themes);
-    const currentIndex = themes.indexOf(PPTState.currentTheme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    const nextTheme = themes[nextIndex];
-    
-    switchTheme(nextTheme);
-}
-
-function updateThemePreview() {
-    document.querySelectorAll('.theme-preview').forEach(preview => {
-        preview.classList.remove('active-theme');
-    });
-    
-    const activePreview = document.querySelector(`[data-theme="${PPTState.currentTheme}"]`);
-    if (activePreview) {
-        activePreview.classList.add('active-theme');
-    }
-}
 
 // 帮助模态框
 function showHelp() {
@@ -812,11 +682,7 @@ function adjustIframeContent() {
     console.log(`Adjusted viewport scale: ${userScaleMultiplier}`);
 }
 
-// 应用iframe内容缩放（兼容旧版本的调用）
-function applyIframeScaling(targetWidth, targetHeight) {
-    // 简化版本，主要使用adjustIframeContent
-    adjustIframeContent();
-}
+
 
 // 重置iframe缩放（用于全屏模式）
 function resetIframeScaling() {
@@ -829,61 +695,12 @@ function resetIframeScaling() {
     console.log('Reset iframe scaling to normal');
 }
 
-// 自动播放功能
-function startAutoplay() {
-    if (PPTState.settings.autoplay) {
-        PPTState.autoplayInterval = setInterval(() => {
-            nextSlide();
-        }, PPTState.settings.autoplayInterval);
-    }
-}
 
-function stopAutoplay() {
-    if (PPTState.autoplayInterval) {
-        clearInterval(PPTState.autoplayInterval);
-        PPTState.autoplayInterval = null;
-    }
-}
 
 // 功能按钮处理
-function openFolder() {
-    // 在实际项目中，这个功能可能需要特殊处理
-    alert('请在文件管理器中打开项目文件夹');
-}
 
-function showAIHelp() {
-    const aiPrompt = PPTConfig.aiPrompts.generatePrompt(
-        PPTState.currentTheme,
-        'business',
-        '请根据我的具体需求创建演示文稿内容'
-    );
-    
-    // 创建一个显示AI提示词的弹窗
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.display = 'flex';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>AI 提示词助手</h3>
-                <button class="modal-close" onclick="this.closest('.modal').remove()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p><strong>当前主题：</strong>${PPTConfig.themes[PPTState.currentTheme].name}</p>
-                <div class="prompt-box">
-                    <pre>${aiPrompt}</pre>
-                </div>
-                <button class="btn-primary" onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent).then(() => alert('提示词已复制到剪贴板'))">
-                    <i class="fas fa-copy"></i> 复制提示词
-                </button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-}
+
+
 
 function openReadme() {
     // 在新窗口中打开README文件
@@ -1302,6 +1119,7 @@ async function restoreUserFolder() {
                 // 更新配置
                 PPTConfig.slideFiles.basePath = savedFolder + '/';
                 PPTConfig.slideFiles.files = files;
+                return; // 成功加载保存的文件夹，直接返回
             } else {
                 console.log(`已保存的文件夹 ${savedFolder} 中没有找到HTML文件，回退到默认文件夹`);
                 localStorage.removeItem('ppt-folder-path');
@@ -1310,6 +1128,18 @@ async function restoreUserFolder() {
             console.log(`无法访问已保存的文件夹 ${savedFolder}，回退到默认文件夹:`, error);
             localStorage.removeItem('ppt-folder-path');
         }
+    }
+    
+    // 如果没有保存的文件夹或加载失败，使用默认项目
+    try {
+        const defaultFiles = await discoverProjectFiles('ppt/default');
+        if (defaultFiles.length > 0) {
+            PPTConfig.slideFiles.basePath = 'ppt/default/';
+            PPTConfig.slideFiles.files = defaultFiles;
+            console.log('已加载默认项目文件:', defaultFiles);
+        }
+    } catch (error) {
+        console.error('加载默认项目失败:', error);
     }
 }
 
@@ -1327,14 +1157,10 @@ window.showPresentationTimer = showPresentationTimer;
 window.resetSlideOrder = resetSlideOrder;
 window.toggleSidebarSection = toggleSidebarSection;
 window.toggleFullscreen = toggleFullscreen;
-window.switchTheme = switchTheme;
-window.toggleTheme = toggleTheme;
 window.showHelp = showHelp;
 window.closeHelp = closeHelp;
 window.startTutorial = startTutorial;
 window.closeWelcome = closeWelcome;
-window.openFolder = openFolder;
-window.showAIHelp = showAIHelp;
 window.openReadme = openReadme;
 window.initializeZoomController = initializeZoomController;
 window.showFolderSelector = showFolderSelector;

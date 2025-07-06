@@ -146,7 +146,7 @@ A: 是的，除了在线字体和图标，所有功能都可以离线使用。
 ppt-html-template/
 ├── index.html           # 主文件（双击即可打开）
 ├── config.js           # 自动配置文件
-├── sync-slides.js      # 幻灯片同步工具
+# 幻灯片同步工具已移除
 ├── ppt/                # PPT文件夹 ⭐
 │   ├── default/        # 默认演示文稿
 │   │   ├── 01-welcome.html
@@ -164,12 +164,16 @@ ppt-html-template/
 ├── assets/
 │   ├── css/            # 样式文件
 │   │   ├── main.css    # 主样式
-│   │   ├── themes/     # 主题样式
-│   │   └── ...
+│   │   ├── responsive.css  # 响应式样式
+│   │   └── editor.css  # 编辑器样式
 │   └── js/             # 功能模块
 │       ├── main.js     # 核心功能
-│       ├── function-panel.js  # 功能面板
-│       └── ...
+│       ├── keyboard.js # 键盘快捷键
+│       ├── sidebar-thumbnails.js  # 侧边栏缩略图
+│       ├── presentation-timer.js  # 演示计时器
+│       ├── layout-templates.js    # 布局模板
+│       ├── code-highlight.js      # 代码高亮
+│       └── pdf-export.js          # PDF导出
 └── README.md           # 项目说明
 ```
 
@@ -185,15 +189,15 @@ ppt-html-template/
 | `Alt + T` | 演示计时器 | 专业的时间管理工具 |
 | `B` | 黑屏模式 | 临时黑屏 |
 
-## 🎨 主题样式
+## 🎨 样式设计
 
-项目内置三种精心设计的主题：
+项目采用现代化的设计语言：
 
-- **Apple 主题**：基于 shadcn/ui 设计语言，现代简洁
-- **Minimal 主题**：极简黑白风格，高对比度
-- **Brutalist 主题**：大胆色彩，强视觉冲击
+- **现代简洁**：基于 shadcn/ui 设计语言
+- **响应式布局**：完美适配各种设备尺寸
+- **专业外观**：16:9 比例，适合演示使用
 
-> **自定义样式：** 可在 `assets/css/themes/` 目录下创建自定义主题
+> **自定义样式：** 可在 `assets/css/` 目录下修改样式文件
 
 
 ## 📚 多项目管理
@@ -225,7 +229,7 @@ MIT License - 自由使用、修改和分发
 ## 🔗 相关链接
 
 - **AI编辑器推荐**：[Cursor](https://cursor.sh/) | [Trae](https://trae.ai/) | [Windsurf](https://windsurf.ai/)
-- **同步工具**：使用 `node sync-slides.js` 同步默认演示文稿文件
+- **轻量化设计**：无需同步工具，直接编辑HTML文件
 - **示例风格**：项目内置两种示例风格供参考学习
 
 ---
