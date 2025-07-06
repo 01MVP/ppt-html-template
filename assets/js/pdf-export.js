@@ -31,7 +31,7 @@ class PDFExporter {
             
         } catch (error) {
             console.error('PDF导出失败:', error);
-            alert('PDF导出失败: ' + error.message);
+        alert('PDF导出失败: ' + error.message);
         }
     }
 

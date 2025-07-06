@@ -1279,6 +1279,93 @@ kbd {
     margin-right: var(--spacing-sm);
 }
 
+/* ===== 文件夹选择器样式 ===== */
+.folder-options {
+    margin: var(--spacing-lg) 0;
+}
+
+.folder-option {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+    cursor: pointer;
+    transition: all var(--duration-fast) ease;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.folder-option:hover {
+    background-color: var(--hover-color);
+    border-color: var(--primary-color);
+}
+
+.folder-option:last-child {
+    margin-bottom: 0;
+}
+
+.folder-option .folder-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: var(--spacing-xs);
+}
+
+.folder-option i {
+    color: var(--primary-color);
+    margin-right: var(--spacing-md);
+    font-size: 1.2rem;
+}
+
+.folder-option span {
+    font-weight: 500;
+    flex: 1;
+}
+
+.folder-option small {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin-left: 2rem;
+}
+
+.custom-folder-input {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+}
+
+.custom-folder-input label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+}
+
+.custom-folder-input input {
+    width: 70%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-right: var(--spacing-sm);
+    font-family: inherit;
+}
+
+.custom-folder-input button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) ease;
+    font-family: inherit;
+}
+
+.custom-folder-input button:hover {
+    background-color: var(--secondary-color);
+}
+
 /* ===== 移动端底部导航 ===== */
 .mobile-nav {
     display: none;

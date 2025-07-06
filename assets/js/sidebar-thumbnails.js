@@ -33,7 +33,7 @@ class SidebarThumbnailManager {
                 this.slideOrder = JSON.parse(savedOrder);
             }
         } catch (e) {
-            console.warn('Failed to load sidebar settings:', e);
+            console.warn('加载侧边栏设置失败:', e);
         }
     }
 
@@ -42,7 +42,7 @@ class SidebarThumbnailManager {
         try {
             localStorage.setItem('ppt-slide-order', JSON.stringify(this.slideOrder));
         } catch (e) {
-            console.warn('Failed to save sidebar settings:', e);
+            console.warn('保存侧边栏设置失败:', e);
         }
     }
 

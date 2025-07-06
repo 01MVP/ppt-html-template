@@ -77,10 +77,12 @@
                 </div>
                 
                 <div class="control-right">
+                    <button class="control-btn custom-tooltip" onclick="showFolderSelector()" data-tooltip="选择PPT文件夹">
+                        <i class="fas fa-folder-open"></i>
+                    </button>
                     <button class="control-btn custom-tooltip" onclick="showFunctionPanel()" data-tooltip="功能面板 (Ctrl+/)">
                         <i class="fas fa-cogs"></i>
                     </button>
-
                     <button class="control-btn custom-tooltip" onclick="showPresentationTimer()" data-tooltip="演示计时器 (Alt+T)">
                         <i class="fas fa-clock"></i>
                     </button>
@@ -138,6 +140,49 @@
                         <kbd>Esc</kbd>
                         <span>退出全屏</span>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 文件夹选择弹窗 -->
+    <div id="folder-selector-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>选择PPT文件夹</h3>
+                <button class="modal-close" onclick="closeFolderSelector()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>选择包含HTML幻灯片的文件夹：</p>
+                <div class="folder-options">
+                    <div class="folder-option" onclick="selectFolder('slides')">
+                        <div class="folder-header">
+                            <i class="fas fa-folder"></i>
+                            <span>slides (默认)</span>
+                        </div>
+                        <small>当前使用的文件夹</small>
+                    </div>
+                    <div class="folder-option" onclick="selectFolder('examples/neobrutalism')">
+                        <div class="folder-header">
+                            <i class="fas fa-folder"></i>
+                            <span>examples/neobrutalism</span>
+                        </div>
+                        <small>新野兽派风格示例</small>
+                    </div>
+                    <div class="folder-option" onclick="selectFolder('examples/minimal')">
+                        <div class="folder-header">
+                            <i class="fas fa-folder"></i>
+                            <span>examples/minimal</span>
+                        </div>
+                        <small>极简风格示例</small>
+                    </div>
+                </div>
+                <div class="custom-folder-input">
+                    <label>或输入自定义文件夹路径：</label>
+                    <input type="text" id="custom-folder-path" placeholder="例如：my-ppt-folder">
+                    <button onclick="selectCustomFolder()">切换</button>
                 </div>
             </div>
         </div>

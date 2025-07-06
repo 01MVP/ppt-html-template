@@ -27,6 +27,9 @@ function initializePPT() {
     PPTState.settings = PPTConfig.settings;
     PPTState.currentTheme = PPTConfig.theme;
     
+    // 恢复用户选择的文件夹
+    restoreUserFolder();
+    
     // 加载幻灯片内容
     loadSlideContent();
     
@@ -101,7 +104,7 @@ function loadSlideContent() {
         throw new Error('没有找到可用的幻灯片文件配置');
         
     } catch (error) {
-        console.error('Error loading slide content:', error);
+        console.error('加载幻灯片内容时出错:', error);
         // 加载失败时显示错误信息
         showErrorMessage('无法加载幻灯片内容: ' + error.message);
     }
@@ -249,22 +252,33 @@ function showErrorMessage(message) {
                     li { padding: 8px 0; color: #6c757d; }
                     li:before { content: "✓ "; color: #28a745; font-weight: bold; margin-right: 8px; }
                     code { background: #e9ecef; padding: 4px 8px; border-radius: 4px; font-family: 'Consolas', monospace; }
+                    .browser-tip { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 20px 0; }
+                    .browser-tip h4 { color: #856404; margin-bottom: 10px; }
                 </style>
             </head>
             <body>
                 <div class="error-container">
-                    <h2>⚠️ 加载错误</h2>
+                    <h2>⚠️ 无法加载幻灯片</h2>
                     <p>${message}</p>
-                    <div class="solution">
-                        <h4>🔧 请检查：</h4>
-                        <ul>
-                            <li>确保 <code>slides/</code> 文件夹中有HTML文件</li>
-                            <li>检查 <code>config.js</code> 中的文件列表配置</li>
-                            <li>确认文件路径和文件名正确</li>
-                            <li>查看浏览器控制台是否有更多错误信息</li>
+                    <div class="browser-tip">
+                        <h4>💡 这可能是浏览器安全限制</h4>
+                        <p>部分浏览器会阻止本地文件访问。推荐使用以下浏览器：</p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Chrome浏览器</strong> - 兼容性最好</li>
+                            <li><strong>Firefox浏览器</strong> - 支持良好</li>
+                            <li><strong>Edge浏览器</strong> - 微软推荐</li>
                         </ul>
                     </div>
-                    <p><strong>提示：</strong>现在可以直接双击 <code>index.html</code> 打开，无需本地服务器！</p>
+                    <div class="solution">
+                        <h4>🚀 快速解决方案：</h4>
+                        <ol style="list-style: decimal; margin-left: 20px; color: #6c757d;">
+                            <li>点击文件夹选择器，先切换回"slides (默认)"</li>
+                            <li>如果还是不行，尝试刷新页面</li>
+                            <li>确保项目文件夹完整，所有文件都在</li>
+                            <li>尝试用不同的浏览器打开</li>
+                        </ol>
+                    </div>
+                    <p><strong>💡 小贴士：</strong>这是零依赖项目，直接双击 <code>index.html</code> 即可使用，无需安装任何软件！</p>
                 </div>
             </body>
             </html>
@@ -924,7 +938,7 @@ function logPerformance() {
 
 // 错误处理
 function handleError(error) {
-    console.error('PPT Error:', error);
+            console.error('PPT系统错误:', error);
     
     // 在生产环境中，可以发送错误报告
     if (typeof window.gtag === 'function') {
@@ -948,7 +962,7 @@ function initializeZoomController() {
     const zoomDisplay = document.getElementById('zoom-display');
     
     if (!zoomOutBtn || !zoomInBtn || !zoomResetBtn || !zoomDisplay) {
-        console.warn('Zoom controller elements not found');
+        console.warn('缩放控制器元素未找到，跳过初始化');
         return;
     }
     
@@ -998,6 +1012,109 @@ window.addEventListener('unhandledrejection', (event) => {
     handleError(event.reason);
 });
 
+// 文件夹选择功能
+function showFolderSelector() {
+    document.getElementById('folder-selector-modal').style.display = 'flex';
+}
+
+function closeFolderSelector() {
+    document.getElementById('folder-selector-modal').style.display = 'none';
+}
+
+function selectFolder(folderPath) {
+    // 预定义不同文件夹的文件列表
+    const folderFiles = {
+        'slides': [
+            '01-welcome.html',
+            '02-features.html', 
+            '03-how-to-use.html'
+        ],
+        'examples/neobrutalism': [
+            '01-cover.html',
+            '02-content.html',
+            '03-thanks.html'
+        ],
+        'examples/minimal': [
+            '01-cover.html',
+            '02-content.html',
+            '03-thanks.html'
+        ]
+    };
+    
+    // 获取文件列表，如果没有预定义则尝试常见文件名
+    const files = folderFiles[folderPath] || [
+        '01-cover.html',
+        '02-content.html',
+        '03-thanks.html',
+        '01-intro.html',
+        '02-main.html',
+        '03-conclusion.html'
+    ];
+    
+    // 更新配置
+    PPTConfig.slideFiles.basePath = folderPath + '/';
+    PPTConfig.slideFiles.files = files;
+    
+    // 重新加载幻灯片
+    loadSlideContent();
+    
+    // 保存用户选择
+    localStorage.setItem('ppt-folder-path', folderPath);
+    
+    // 关闭弹窗
+    closeFolderSelector();
+    
+    // 提示用户
+    alert(`已切换到文件夹: ${folderPath}`);
+}
+
+function selectCustomFolder() {
+    const customPath = document.getElementById('custom-folder-path').value.trim();
+    if (!customPath) {
+        alert('请输入文件夹路径');
+        return;
+    }
+    
+    selectFolder(customPath);
+    document.getElementById('custom-folder-path').value = '';
+}
+
+// 页面加载时恢复用户选择的文件夹
+function restoreUserFolder() {
+    const savedFolder = localStorage.getItem('ppt-folder-path');
+    if (savedFolder && savedFolder !== 'slides') {
+        // 预定义不同文件夹的文件列表
+        const folderFiles = {
+            'slides': [
+                '01-welcome.html',
+                '02-features.html', 
+                '03-how-to-use.html'
+            ],
+            'examples/neobrutalism': [
+                '01-cover.html',
+                '02-content.html',
+                '03-thanks.html'
+            ],
+            'examples/minimal': [
+                '01-cover.html',
+                '02-content.html',
+                '03-thanks.html'
+            ]
+        };
+        
+        // 获取文件列表
+        const files = folderFiles[savedFolder] || [
+            '01-cover.html',
+            '02-content.html',
+            '03-thanks.html'
+        ];
+        
+        // 更新配置
+        PPTConfig.slideFiles.basePath = savedFolder + '/';
+        PPTConfig.slideFiles.files = files;
+    }
+}
+
 // 导出到全局作用域
 window.PPTState = PPTState;
 window.initializePPT = initializePPT;
@@ -1018,4 +1135,8 @@ window.closeWelcome = closeWelcome;
 window.openFolder = openFolder;
 window.showAIHelp = showAIHelp;
 window.openReadme = openReadme;
-window.initializeZoomController = initializeZoomController; 
+window.initializeZoomController = initializeZoomController;
+window.showFolderSelector = showFolderSelector;
+window.closeFolderSelector = closeFolderSelector;
+window.selectFolder = selectFolder;
+window.selectCustomFolder = selectCustomFolder; 
