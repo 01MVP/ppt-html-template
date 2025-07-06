@@ -1012,6 +1012,53 @@ window.addEventListener('unhandledrejection', (event) => {
     handleError(event.reason);
 });
 
+// 显示Toast消息
+function showToast(message, duration = 3000) {
+    // 创建toast元素
+    const toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.textContent = message;
+    
+    // 设置样式
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        z-index: 10000;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+        max-width: 300px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(4px);
+    `;
+    
+    // 添加到页面
+    document.body.appendChild(toast);
+    
+    // 动画显示
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // 自动移除
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 300);
+    }, duration);
+}
+
 // 文件夹选择功能
 function showFolderSelector() {
     // 先加载PPT画廊
@@ -1129,8 +1176,10 @@ function selectFolder(folderPath) {
     // 关闭弹窗
     closeFolderSelector();
     
-    // 提示用户
-    alert(`已切换到文件夹: ${folderPath}`);
+    // 不显示任何提示 - 用户可以直接看到幻灯片内容的变化
+    // showToast(`已切换到: ${folderPath.replace('ppt/', '').replace('examples/', '')}`);
+    
+    // 视觉反馈：幻灯片内容会立即变化，无需额外提示
 }
 
 function selectCustomFolder() {
@@ -1206,4 +1255,5 @@ window.closeFolderSelector = closeFolderSelector;
 window.selectFolder = selectFolder;
 window.selectCustomFolder = selectCustomFolder;
 window.loadPPTGallery = loadPPTGallery;
-window.createPPTCard = createPPTCard; 
+window.createPPTCard = createPPTCard;
+window.showToast = showToast; 
