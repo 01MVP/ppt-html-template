@@ -10,11 +10,11 @@
 /* ===== 平板设备适配 (768px - 1024px) ===== */
 @media (max-width: 1024px) {
     :root {
-        --sidebar-width: 240px;
-        --font-size-5xl: 2.5rem;   /* 40px */
-        --font-size-4xl: 2rem;     /* 32px */
+        --sidebar-width: 280px;
+        --font-size-5xl: 2rem;      /* 32px */
+        --font-size-4xl: 1.75rem;   /* 28px */
         --font-size-3xl: 1.75rem;  /* 28px */
-        --spacing-3xl: 3rem;       /* 48px */
+        --spacing-3xl: 2.5rem;      /* 40px */
     }
     
     .ppt-container {
@@ -22,54 +22,64 @@
     }
     
     .sidebar {
-        width: 100%;
-        height: auto;
-        order: 2;
-        border-right: none;
-        border-top: 1px solid var(--border-color);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        z-index: var(--z-sidebar);
+        background-color: var(--background-color);
+        box-shadow: var(--shadow-xl);
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    /* 中等屏幕给main-content添加左边距 */
+    .sidebar.open ~ .main-content {
+        margin-left: var(--sidebar-width);
+    }
+    
+    .sidebar-header {
+        padding: var(--spacing-md) var(--spacing-lg);
     }
     
     .slide-navigation {
-        padding: var(--spacing-md) 0;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-    
-    .nav-item {
-        padding: var(--spacing-sm) var(--spacing-lg);
-    }
-    
-    .main-content {
-        order: 1;
+        max-height: none;
         flex: 1;
     }
     
     .slide {
-        padding: var(--spacing-xl);
+        padding: var(--spacing-lg);
     }
     
+    .slide-content {
+        max-width: none;
+    }
+    
+    /* 功能卡片两列显示 */
     .features-grid {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-lg);
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
     }
     
     .cover-features {
-        flex-direction: column;
         gap: var(--spacing-lg);
     }
     
+    /* 主题展示调整 */
     .theme-showcase {
-        flex-direction: column;
-        gap: var(--spacing-lg);
+        gap: var(--spacing-md);
     }
     
+    /* 行动卡片调整 */
     .start-actions {
-        flex-direction: column;
-        gap: var(--spacing-lg);
+        gap: var(--spacing-md);
     }
     
     .action-card {
-        min-width: auto;
+        padding: var(--spacing-lg);
     }
 }
 
@@ -102,6 +112,11 @@
     
     .sidebar.open {
         transform: translateX(0);
+    }
+    
+    /* 移动端不给main-content添加左边距 */
+    .sidebar.open ~ .main-content {
+        margin-left: 0;
     }
     
     /* 移动端sidebar内容优化 */
@@ -281,6 +296,79 @@
     .progress-bar {
         height: 6px;
     }
+    
+    /* 浮动sidebar打开按钮 */
+    .sidebar-open-btn {
+        top: var(--spacing-md);
+        left: var(--spacing-md);
+        width: 40px;
+        height: 40px;
+        font-size: var(--font-size-md);
+    }
+    
+    /* 计数器覆盖层 */
+    .slide-counter-overlay {
+        bottom: var(--spacing-md);
+        right: var(--spacing-md);
+    }
+    
+    .slide-counter-badge {
+        font-size: 12px;
+        padding: 4px 8px;
+        min-width: 50px;
+    }
+    
+    /* 主内容区域padding调整 */
+    .main-content {
+        padding: var(--spacing-xs);
+    }
+    
+    .slide-container {
+        padding: var(--spacing-xs);
+        min-height: calc(100vh - 100px);
+    }
+    
+    .slide-viewport {
+        max-height: calc(100vh - 150px);
+    }
+    
+    /* ===== 移动端sidebar底部控制区域 ===== */
+    .sidebar-slide-controls {
+        padding: var(--spacing-sm);
+    }
+    
+    .slide-navigation-controls {
+        padding: 0;
+        gap: var(--spacing-sm);
+    }
+    
+    .nav-control-btn {
+        width: 32px;
+        height: 32px;
+        font-size: var(--font-size-sm);
+    }
+    
+    .slide-counter {
+        font-size: var(--font-size-xs);
+        min-width: 45px;
+    }
+    
+    /* ===== 移动端缩放控制区域 ===== */
+    .zoom-controls {
+        gap: var(--spacing-xs);
+        padding: 0;
+    }
+    
+    .zoom-btn {
+        width: 24px;
+        height: 24px;
+        font-size: var(--font-size-xs);
+    }
+    
+    .zoom-display {
+        font-size: var(--font-size-xs);
+        min-width: 40px;
+    }
 }
 
 /* ===== 小屏手机适配 (<480px) ===== */
@@ -344,6 +432,75 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+    
+    /* 浮动sidebar打开按钮 */
+    .sidebar-open-btn {
+        top: var(--spacing-sm);
+        left: var(--spacing-sm);
+        width: 36px;
+        height: 36px;
+        font-size: var(--font-size-sm);
+    }
+    
+    /* 计数器覆盖层 */
+    .slide-counter-overlay {
+        bottom: var(--spacing-sm);
+        right: var(--spacing-sm);
+    }
+    
+    .slide-counter-badge {
+        font-size: 11px;
+        padding: 2px 6px;
+        min-width: 45px;
+    }
+    
+    /* 主内容区域 */
+    .slide-container {
+        padding: 2px;
+        min-height: calc(100vh - 80px);
+    }
+    
+    .slide-viewport {
+        max-height: calc(100vh - 120px);
+    }
+    
+    /* ===== 移动端sidebar底部控制区域 ===== */
+    .sidebar-slide-controls {
+        padding: var(--spacing-xs);
+    }
+    
+    .slide-navigation-controls {
+        padding: 0;
+        gap: var(--spacing-xs);
+    }
+    
+    .nav-control-btn {
+        width: 28px;
+        height: 28px;
+        font-size: var(--font-size-xs);
+    }
+    
+    .slide-counter {
+        font-size: var(--font-size-xs);
+        min-width: 40px;
+    }
+    
+    /* ===== 小屏幕缩放控制区域 ===== */
+    .zoom-controls {
+        gap: 2px;
+        padding: 0;
+    }
+    
+    .zoom-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+    
+    .zoom-display {
+        font-size: 10px;
+        min-width: 35px;
     }
 }
 
@@ -555,5 +712,39 @@
     .theme-preview {
         border: 1px solid #000000 !important;
         box-shadow: none !important;
+    }
+}
+
+/* ===== 处理sidebar状态切换 ===== */
+@media (min-width: 769px) {
+    /* 桌面端：sidebar展开时为main-content添加左边距 */
+    .sidebar.open ~ .main-content {
+        margin-left: var(--sidebar-width);
+        transition: margin-left var(--duration-normal) ease;
+    }
+    
+    /* 桌面端：sidebar关闭时移除左边距 */
+    .sidebar:not(.open) ~ .main-content {
+        margin-left: 0;
+        transition: margin-left var(--duration-normal) ease;
+    }
+}
+
+@media (max-width: 768px) {
+    /* 移动端：sidebar使用覆盖模式，不压缩main-content */
+    .main-content {
+        margin-left: 0 !important;
+    }
+    
+    /* 移动端：sidebar展开时添加背景遮罩 */
+    .sidebar.open::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: calc(var(--z-sidebar) - 1);
     }
 } 

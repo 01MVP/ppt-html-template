@@ -67,6 +67,9 @@ function initializePPT() {
     // 初始化缩放控制器
     initializeZoomController();
     
+    // 初始化侧边栏区域
+    initializeSidebarSections();
+    
     console.log('PPT initialized successfully');
 }
 
@@ -149,8 +152,6 @@ function loadSlideByIndex(index) {
         console.log('Loaded slide:', slide.filename);
     }
 }
-
-
 
 // 解析幻灯片内容
 function parseSlideContent(htmlContent, filename, index) {
@@ -452,11 +453,25 @@ function lastSlide() {
 
 // 更新界面元素
 function updateSlideCounter() {
-    const currentElement = document.getElementById('current-slide');
-    const totalElement = document.getElementById('total-slides');
+    const currentSlideElements = [
+        document.getElementById('current-slide'),
+        document.getElementById('current-slide-overlay')
+    ];
+    const totalSlidesElements = [
+        document.getElementById('total-slides'),
+        document.getElementById('total-slides-overlay')
+    ];
     
-    if (currentElement) currentElement.textContent = PPTState.currentSlide + 1;
-    if (totalElement) totalElement.textContent = PPTState.totalSlides;
+    const currentSlideNumber = PPTState.currentSlide + 1;
+    const totalSlideNumber = PPTState.totalSlides;
+    
+    currentSlideElements.forEach(el => {
+        if (el) el.textContent = currentSlideNumber;
+    });
+    
+    totalSlidesElements.forEach(el => {
+        if (el) el.textContent = totalSlideNumber;
+    });
 }
 
 function updateProgress() {
@@ -468,10 +483,8 @@ function updateProgress() {
 }
 
 function updateSlideTitle() {
-    const titleElement = document.getElementById('slide-title');
-    if (titleElement && PPTState.slides[PPTState.currentSlide]) {
-        titleElement.textContent = PPTState.slides[PPTState.currentSlide].title;
-    }
+    // 幻灯片标题已被移除，保留此函数以维持兼容性
+    // 如果将来需要显示标题，可以在这里重新实现
 }
 
 // 更新演讲者备注
@@ -734,165 +747,67 @@ function adjustSlideViewport() {
     
     if (!slideContainer || !slideViewport) return;
     
-    // 重置padding以获取真实的容器尺寸
-    slideContainer.style.padding = '0px';
+    // 使用CSS的aspect-ratio和max-height自动处理大部分情况
+    // 只需要调整少量的CSS属性来适应不同的窗口尺寸
     
-    // 获取容器的原始尺寸
     const containerRect = slideContainer.getBoundingClientRect();
     const isMobile = window.innerWidth < 768;
     const isSmallWindow = window.innerWidth < 1200;
     
-    // 动态调整padding，窗口越小padding越小
-    const isVerySmall = containerRect.width < 500 || containerRect.height < 400;
+    // 动态调整padding以适应不同窗口大小
     let padding;
-    
-    if (isVerySmall) {
-        padding = Math.max(2, containerRect.width * 0.005); // 极小窗口使用最小padding
+    if (containerRect.width < 500) {
+        padding = 4; // 极小窗口
     } else if (isMobile) {
-        padding = Math.max(4, Math.min(8, containerRect.width * 0.01)); // 移动端使用极小的padding
+        padding = 8; // 移动端
     } else if (isSmallWindow) {
-        padding = Math.max(8, Math.min(16, containerRect.width * 0.015)); // 小窗口使用较小的padding
+        padding = 16; // 小窗口
     } else {
-        padding = Math.max(16, Math.min(24, containerRect.width * 0.02)); // 大窗口使用正常的padding
+        padding = 24; // 大窗口
     }
     
-    // 应用计算出的padding
     slideContainer.style.padding = `${padding}px`;
     
-    // 计算可用空间
-    const availableWidth = containerRect.width - (padding * 2);
-    const availableHeight = containerRect.height - (padding * 2);
+    // 调整最大高度以确保在小窗口中也能正常显示
+    const maxHeight = Math.max(200, containerRect.height - padding * 2);
+    slideViewport.style.maxHeight = `${maxHeight}px`;
     
-    // 调整最小尺寸限制，让小窗口能显示更多内容
-    let minWidth, minHeight;
-    if (isVerySmall) {
-        minWidth = 150;
-        minHeight = 84; // 150 * 9/16 = 84.375
-    } else if (isMobile) {
-        minWidth = 200;
-        minHeight = 112; // 200 * 9/16 = 112.5
-    } else {
-        minWidth = 240;
-        minHeight = 135; // 240 * 9/16 = 135
-    }
+    // 简化iframe的缩放逻辑
+    adjustIframeContent();
     
-    // 确保有足够的空间
-    if (availableWidth < minWidth || availableHeight < minHeight) {
-        // 如果空间不足，使用更小的padding
-        if (containerRect.width < 300) {
-            padding = 1; // 超小窗口使用1px padding
-        } else {
-            padding = Math.max(2, padding / 2);
-        }
-        slideContainer.style.padding = `${padding}px`;
-        
-        // 对于超小窗口，进一步降低最小尺寸
-        if (containerRect.width < 300) {
-            minWidth = Math.max(100, containerRect.width - 10);
-            minHeight = Math.max(56, minWidth * 9 / 16);
-        }
-    }
-    
-    // 重新计算可用空间
-    const finalAvailableWidth = containerRect.width - (padding * 2);
-    const finalAvailableHeight = containerRect.height - (padding * 2);
-    
-    // 计算16:9比例下的理想尺寸
-    const aspectRatio = 16 / 9;
-    let targetWidth = finalAvailableWidth;
-    let targetHeight = finalAvailableWidth / aspectRatio;
-    
-    // 如果高度超出可用空间，则以高度为准
-    if (targetHeight > finalAvailableHeight) {
-        targetHeight = finalAvailableHeight;
-        targetWidth = finalAvailableHeight * aspectRatio;
-    }
-    
-    // 确保尺寸不超出可用空间
-    targetWidth = Math.min(targetWidth, finalAvailableWidth);
-    targetHeight = Math.min(targetHeight, finalAvailableHeight);
-    
-    // 再次校验最小尺寸
-    targetWidth = Math.max(minWidth, targetWidth);
-    targetHeight = Math.max(minHeight, targetHeight);
-    
-    // 最终校验比例
-    const currentRatio = targetWidth / targetHeight;
-    if (Math.abs(currentRatio - aspectRatio) > 0.01) {
-        if (currentRatio > aspectRatio) {
-            targetWidth = targetHeight * aspectRatio;
-        } else {
-            targetHeight = targetWidth / aspectRatio;
-        }
-    }
-    
-    // 应用尺寸
-    slideViewport.style.width = Math.round(targetWidth) + 'px';
-    slideViewport.style.height = Math.round(targetHeight) + 'px';
-    
-    // 应用iframe内容缩放
-    applyIframeScaling(targetWidth, targetHeight);
-    
-    // 计算利用率
-    const utilizationWidth = (targetWidth / containerRect.width * 100).toFixed(1);
-    const utilizationHeight = (targetHeight / containerRect.height * 100).toFixed(1);
-    
-    console.log(`Adjusted viewport: ${Math.round(targetWidth)}x${Math.round(targetHeight)} (${utilizationWidth}% × ${utilizationHeight}%), padding: ${padding}px`);
+    console.log(`Adjusted viewport: max-height: ${maxHeight}px, padding: ${padding}px`);
 }
 
-// 应用iframe内容缩放
-function applyIframeScaling(targetWidth, targetHeight) {
+// 简化的iframe内容调整
+function adjustIframeContent() {
     const iframe = document.getElementById('slide-frame');
     if (!iframe) return;
     
-    // 根据目标尺寸智能选择标准尺寸 - 使用更大的尺寸以显示更多内容
-    let standardWidth, standardHeight;
+    const slideViewport = document.querySelector('.slide-viewport');
+    if (!slideViewport) return;
     
-    // 使用更大的标准尺寸以确保能看到完整页面
-    if (targetWidth < 300) {
-        standardWidth = 1400;
-        standardHeight = 787;
-    } else if (targetWidth < 500) {
-        standardWidth = 1600;
-        standardHeight = 900;
-    } else {
-        standardWidth = 1920;
-        standardHeight = 1080;
-    }
+    // 获取viewport的实际尺寸
+    const viewportRect = slideViewport.getBoundingClientRect();
     
-    // 获取用户设置的缩放倍数
+    // 简化缩放逻辑 - 让iframe自适应viewport
     const userScaleMultiplier = window.PPTState?.userScaleMultiplier || 1.0;
     
-    // 计算缩放比例
-    const scaleX = targetWidth / standardWidth;
-    const scaleY = targetHeight / standardHeight;
+    // 只有在用户自定义缩放时才应用transform
+    if (userScaleMultiplier !== 1.0) {
+        iframe.style.transform = `scale(${userScaleMultiplier})`;
+        iframe.style.transformOrigin = '0 0';
+    } else {
+        iframe.style.transform = 'none';
+        iframe.style.transformOrigin = 'initial';
+    }
     
-    // 使用较小的缩放比例以确保内容完全可见
-    const baseScale = Math.min(scaleX, scaleY);
-    
-    // 应用用户自定义的缩放倍数
-    const scale = baseScale * userScaleMultiplier;
-    
-    // 应用一个最小缩放限制，避免内容过小
-    const minScale = 0.05;
-    const finalScale = Math.max(scale, minScale);
-    
-    // 计算缩放后的实际尺寸
-    const scaledWidth = standardWidth * finalScale;
-    const scaledHeight = standardHeight * finalScale;
-    
-    // 计算居中的偏移量
-    const offsetX = (targetWidth - scaledWidth) / 2;
-    const offsetY = (targetHeight - scaledHeight) / 2;
-    
-    // 应用CSS变换
-    iframe.style.width = standardWidth + 'px';
-    iframe.style.height = standardHeight + 'px';
-    iframe.style.transform = `scale(${finalScale}) translate(${offsetX/finalScale}px, ${offsetY/finalScale}px)`;
-    iframe.style.transformOrigin = '0 0';
-    iframe.style.overflow = 'hidden';
-    
-    console.log(`Applied iframe scaling: ${finalScale.toFixed(3)}x (${standardWidth}x${standardHeight} → ${Math.round(scaledWidth)}x${Math.round(scaledHeight)}), user multiplier: ${userScaleMultiplier}`);
+    console.log(`Adjusted iframe content with scale: ${userScaleMultiplier}`);
+}
+
+// 应用iframe内容缩放（兼容旧版本的调用）
+function applyIframeScaling(targetWidth, targetHeight) {
+    // 简化版本，主要使用adjustIframeContent
+    adjustIframeContent();
 }
 
 // 重置iframe缩放（用于全屏模式）
@@ -1067,11 +982,8 @@ function initializeZoomController() {
         updateZoomDisplay();
         localStorage.setItem('ppt-zoom-scale', window.PPTState.userScaleMultiplier.toString());
         
-        // 重新应用缩放
-        const slideViewport = document.querySelector('.slide-viewport');
-        if (slideViewport) {
-            adjustSlideViewport();
-        }
+        // 使用新的iframe内容调整功能
+        adjustIframeContent();
     }
     
     function updateZoomDisplay() {
@@ -1322,6 +1234,7 @@ window.toggleSidebar = toggleSidebar;
 window.closeSidebar = closeSidebar;
 window.showPresentationTimer = showPresentationTimer;
 window.resetSlideOrder = resetSlideOrder;
+window.toggleSidebarSection = toggleSidebarSection;
 window.toggleFullscreen = toggleFullscreen;
 window.switchTheme = switchTheme;
 window.toggleTheme = toggleTheme;
@@ -1339,4 +1252,36 @@ window.selectFolder = selectFolder;
 window.selectCustomFolder = selectCustomFolder;
 window.loadPPTGallery = loadPPTGallery;
 window.createPPTCard = createPPTCard;
-window.showToast = showToast; 
+window.showToast = showToast;
+
+// 侧边栏区域展开/收缩功能
+function toggleSidebarSection(sectionName) {
+    const sectionContent = document.getElementById(sectionName + '-section');
+    const sectionHeader = document.querySelector(`[onclick="toggleSidebarSection('${sectionName}')"]`);
+    
+    if (sectionContent && sectionHeader) {
+        const isCollapsed = sectionContent.classList.contains('collapsed');
+        
+        if (isCollapsed) {
+            sectionContent.classList.remove('collapsed');
+            sectionContent.classList.add('expanded');
+            sectionHeader.classList.remove('collapsed');
+        } else {
+            sectionContent.classList.add('collapsed');
+            sectionContent.classList.remove('expanded');
+            sectionHeader.classList.add('collapsed');
+        }
+    }
+}
+
+// 初始化侧边栏区域状态
+function initializeSidebarSections() {
+    const sections = ['functions'];
+    sections.forEach(section => {
+        const sectionContent = document.getElementById(section + '-section');
+        if (sectionContent) {
+            // 默认展开功能面板
+            sectionContent.classList.add('expanded');
+        }
+    });
+} 
