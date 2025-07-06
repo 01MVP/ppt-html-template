@@ -546,6 +546,7 @@ button {
 
 .sidebar.open + .main-content {
     margin-left: var(--sidebar-width);
+    width: calc(100vw - var(--sidebar-width));
 }
 
 /* ===== 控制栏样式 ===== */
@@ -565,6 +566,8 @@ button {
         rgba(0, 122, 255, 0.02) 100%);
     min-height: calc(100vh - var(--spacing-lg) * 2);
     width: 100%;
+    /* 确保在sidebar展开时不会超出可视区域 */
+    max-width: 100%;
 }
 
 .slide-viewport {
@@ -2016,22 +2019,24 @@ button:focus,
 }
 
 .fullscreen-mode .slide-viewport {
-    height: 100vh !important;
+    /* 在全屏模式下，让 slide-viewport 能充满整个屏幕 */
     width: 100vw !important;
+    height: 100vh !important;
     max-width: none !important;
     max-height: none !important;
+    /* 移除aspect-ratio限制，让用户的缩放设置相对于整个屏幕 */
+    aspect-ratio: unset !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     background: transparent !important;
 }
 
 .fullscreen-mode #slide-frame {
-    width: 100vw !important;
-    height: 100vh !important;
+    width: 100% !important;
+    height: 100% !important;
     border-radius: 0 !important;
     background: transparent !important;
-    transform: none !important;
-    transform-origin: initial !important;
+    /* 不重置 transform，保持用户的缩放设置 */
 }
 
 /* ===== 示例幻灯片布局样式 ===== */

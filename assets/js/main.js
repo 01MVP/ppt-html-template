@@ -540,11 +540,13 @@ function handleFullscreenChange() {
     const body = document.body;
     if (PPTState.isFullscreen) {
         body.classList.add('fullscreen-mode');
-        // 全屏时重置iframe缩放
-        resetIframeScaling();
+        // 进入全屏时应用100%缩放
+        setTimeout(() => {
+            adjustSlideViewport();
+        }, 100);
     } else {
         body.classList.remove('fullscreen-mode');
-        // 退出全屏时重新应用缩放
+        // 退出全屏时重新应用用户的缩放设置
         setTimeout(() => {
             adjustSlideViewport();
         }, 100);
@@ -670,29 +672,31 @@ function adjustIframeContent() {
     const slideViewport = document.querySelector('.slide-viewport');
     if (!slideViewport) return;
 
-    const userScaleMultiplier = window.PPTState?.userScaleMultiplier || 1.0;
+    // 在全屏模式下强制使用100%缩放，非全屏模式使用用户设置
+    let scaleMultiplier;
+    if (PPTState.isFullscreen) {
+        scaleMultiplier = 1.0; // 全屏时强制100%
+    } else {
+        scaleMultiplier = window.PPTState?.userScaleMultiplier || 1.0; // 非全屏时使用用户设置
+    }
 
-    if (userScaleMultiplier !== 1.0) {
-        slideViewport.style.transform = `scale(${userScaleMultiplier})`;
-        slideViewport.style.transformOrigin = 'top left';
+    if (scaleMultiplier !== 1.0) {
+        slideViewport.style.transform = `scale(${scaleMultiplier})`;
+        slideViewport.style.transformOrigin = 'center';
     } else {
         slideViewport.style.transform = 'none';
     }
     
-    console.log(`Adjusted viewport scale: ${userScaleMultiplier}`);
+    console.log(`Adjusted viewport scale: ${scaleMultiplier} (user setting: ${window.PPTState?.userScaleMultiplier || 1.0}, fullscreen: ${PPTState.isFullscreen})`);
 }
 
 
 
-// 重置iframe缩放（用于全屏模式）
+// 重置iframe缩放（用于全屏模式）- 已废弃
+// 现在全屏模式通过CSS控制，不再需要JavaScript重置用户缩放设置
 function resetIframeScaling() {
-    const slideViewport = document.querySelector('.slide-viewport');
-    if (!slideViewport) return;
-
-    slideViewport.style.transform = 'none';
-    slideViewport.style.transformOrigin = 'initial';
-    
-    console.log('Reset iframe scaling to normal');
+    // 已废弃：全屏模式现在保持用户的缩放设置
+    console.log('resetIframeScaling is deprecated - fullscreen mode now preserves user zoom settings');
 }
 
 
