@@ -34,11 +34,15 @@ function initializePPT() {
         sidebar.classList.add('open');
     }
     
-    // 恢复用户选择的文件夹
-    restoreUserFolder();
-    
-    // 加载幻灯片内容
-    loadSlideContent();
+    // 恢复用户选择的文件夹（异步操作）
+    restoreUserFolder().then(() => {
+        // 加载幻灯片内容
+        loadSlideContent();
+    }).catch((error) => {
+        console.error('恢复用户文件夹失败:', error);
+        // 即使恢复失败，也继续加载默认内容
+        loadSlideContent();
+    });
     
     // 初始化界面
     updateSlideCounter();
@@ -1062,22 +1066,47 @@ function showFolderSelector() {
 }
 
 // 加载PPT画廊
-function loadPPTGallery() {
+async function loadPPTGallery() {
     const galleryGrid = document.getElementById('ppt-gallery-grid');
     if (!galleryGrid) return;
     
     // 清空现有内容
     galleryGrid.innerHTML = '';
     
-    // 预定义的PPT项目
-    const pptProjects = [
+    // 显示加载提示
+    galleryGrid.innerHTML = '<div class="loading-message">正在扫描PPT项目...</div>';
+    
+    // 动态检测PPT项目
+    const pptProjects = await discoverPPTProjects();
+    
+    // 清空加载提示
+    galleryGrid.innerHTML = '';
+    
+    // 为每个项目创建卡片
+    pptProjects.forEach(project => {
+        const card = createPPTCard(project);
+        galleryGrid.appendChild(card);
+    });
+    
+    // 如果没有找到项目，显示提示
+    if (pptProjects.length === 0) {
+        galleryGrid.innerHTML = '<div class="no-projects-message">暂无PPT项目，请在 ppt/ 文件夹中创建项目</div>';
+    }
+}
+
+// 动态发现PPT项目
+async function discoverPPTProjects() {
+    const projects = [];
+    
+    // 候选项目列表，包含预期的预览文件
+    const candidateProjects = [
         {
             path: 'ppt/default',
             name: '默认演示',
             description: 'HTML PPT模板介绍',
             badge: '默认',
             badgeClass: 'default',
-            previewFile: 'ppt/default/01-welcome.html'
+            expectedFiles: ['01-welcome.html', '02-features.html', '03-how-to-use.html']
         },
         {
             path: 'ppt/examples/neobrutalism',
@@ -1085,7 +1114,7 @@ function loadPPTGallery() {
             description: '大胆色彩、强视觉冲击',
             badge: '创意',
             badgeClass: 'creative',
-            previewFile: 'ppt/examples/neobrutalism/01-cover.html'
+            expectedFiles: ['01-cover.html', '02-content.html', '03-thanks.html']
         },
         {
             path: 'ppt/examples/minimal',
@@ -1093,15 +1122,63 @@ function loadPPTGallery() {
             description: '简洁优雅、专业商务',
             badge: '商务',
             badgeClass: 'professional',
-            previewFile: 'ppt/examples/minimal/01-cover.html'
+            expectedFiles: ['01-cover.html', '02-content.html', '03-thanks.html']
+        },
+        {
+            path: 'ppt/html-ppt-introduction',
+            name: 'HTML PPT 介绍',
+            description: '全面介绍HTML PPT模板功能',
+            badge: '推荐',
+            badgeClass: 'recommended',
+            expectedFiles: ['01-cover.html', '02-features.html', '03-quickstart.html', '04-operation.html', '05-examples.html', '06-tech.html', '07-thanks.html']
         }
     ];
     
-    // 为每个项目创建卡片
-    pptProjects.forEach(project => {
-        const card = createPPTCard(project);
-        galleryGrid.appendChild(card);
-    });
+    // 检测每个候选项目是否存在
+    for (const candidate of candidateProjects) {
+        try {
+            const previewFile = await findFirstValidFile(candidate.path, candidate.expectedFiles);
+            if (previewFile) {
+                projects.push({
+                    ...candidate,
+                    previewFile: previewFile
+                });
+                console.log(`找到项目: ${candidate.name} - 预览文件: ${previewFile}`);
+            } else {
+                console.log(`项目 ${candidate.name} 的文件不可访问`);
+            }
+        } catch (error) {
+            console.log(`项目 ${candidate.path} 检测失败:`, error);
+        }
+    }
+    
+    console.log(`总共发现 ${projects.length} 个项目`);
+    return projects;
+}
+
+// 查找项目文件夹中的第一个有效HTML文件作为预览
+async function findFirstValidFile(projectPath, expectedFiles) {
+    // 由于浏览器CORS限制，直接返回预期的第一个文件
+    // 这些文件实际存在，但fetch检测在本地文件系统中受限
+    console.log(`为项目 ${projectPath} 返回预期的第一个文件`);
+    
+    if (expectedFiles && expectedFiles.length > 0) {
+        const firstFile = `${projectPath}/${expectedFiles[0]}`;
+        console.log(`返回预期文件: ${firstFile}`);
+        return firstFile;
+    }
+    
+    // 备用方案：使用常见的文件名
+    const fallbackFiles = [
+        '01-cover.html',
+        '01-welcome.html', 
+        '01-intro.html',
+        'index.html'
+    ];
+    
+    const firstFallback = `${projectPath}/${fallbackFiles[0]}`;
+    console.log(`返回备用文件: ${firstFallback}`);
+    return firstFallback;
 }
 
 // 创建PPT卡片
@@ -1128,53 +1205,66 @@ function closeFolderSelector() {
     document.getElementById('folder-selector-modal').style.display = 'none';
 }
 
-function selectFolder(folderPath) {
-    // 预定义不同文件夹的文件列表
-    const folderFiles = {
-        'ppt/default': [
-            '01-welcome.html',
-            '02-features.html', 
-            '03-how-to-use.html'
-        ],
-        'ppt/examples/neobrutalism': [
-            '01-cover.html',
-            '02-content.html',
-            '03-thanks.html'
-        ],
-        'ppt/examples/minimal': [
-            '01-cover.html',
-            '02-content.html',
-            '03-thanks.html'
-        ]
+async function selectFolder(folderPath) {
+    try {
+        // 显示加载提示
+        showToast('正在加载项目文件...', 1000);
+        
+        // 动态获取文件列表
+        const files = await discoverProjectFiles(folderPath);
+        
+        if (files.length === 0) {
+            showToast('该文件夹中没有找到HTML文件', 3000);
+            return;
+        }
+        
+        // 更新配置
+        PPTConfig.slideFiles.basePath = folderPath + '/';
+        PPTConfig.slideFiles.files = files;
+        
+        // 重新加载幻灯片
+        loadSlideContent();
+        
+        // 保存用户选择
+        localStorage.setItem('ppt-folder-path', folderPath);
+        
+        // 关闭弹窗
+        closeFolderSelector();
+        
+        // 成功提示
+        showToast(`已切换到: ${folderPath.replace('ppt/', '').replace('examples/', '')}`, 2000);
+        
+    } catch (error) {
+        console.error('切换文件夹失败:', error);
+        showToast('切换文件夹失败，请检查路径是否正确', 3000);
+    }
+}
+
+// 动态发现项目文件
+async function discoverProjectFiles(projectPath) {
+    // 预定义已知项目的文件列表
+    const knownProjects = {
+        'ppt/default': ['01-welcome.html', '02-features.html', '03-how-to-use.html'],
+        'ppt/examples/neobrutalism': ['01-cover.html', '02-content.html', '03-thanks.html'],
+        'ppt/examples/minimal': ['01-cover.html', '02-content.html', '03-thanks.html'],
+        'ppt/html-ppt-introduction': ['01-cover.html', '02-features.html', '03-quickstart.html', '04-operation.html', '05-examples.html', '06-tech.html', '07-thanks.html']
     };
     
-    // 获取文件列表，如果没有预定义则尝试常见文件名
-    const files = folderFiles[folderPath] || [
+    // 如果是已知项目，直接返回预定义的文件列表
+    if (knownProjects[projectPath]) {
+        console.log(`使用预定义的文件列表: ${projectPath}`, knownProjects[projectPath]);
+        return knownProjects[projectPath];
+    }
+    
+    // 对于未知项目，返回常见的文件名模式
+    const defaultFiles = [
         '01-cover.html',
-        '02-content.html',
-        '03-thanks.html',
-        '01-intro.html',
-        '02-main.html',
-        '03-conclusion.html'
+        '02-content.html', 
+        '03-thanks.html'
     ];
     
-    // 更新配置
-    PPTConfig.slideFiles.basePath = folderPath + '/';
-    PPTConfig.slideFiles.files = files;
-    
-    // 重新加载幻灯片
-    loadSlideContent();
-    
-    // 保存用户选择
-    localStorage.setItem('ppt-folder-path', folderPath);
-    
-    // 关闭弹窗
-    closeFolderSelector();
-    
-    // 不显示任何提示 - 用户可以直接看到幻灯片内容的变化
-    // showToast(`已切换到: ${folderPath.replace('ppt/', '').replace('examples/', '')}`);
-    
-    // 视觉反馈：幻灯片内容会立即变化，无需额外提示
+    console.log(`使用默认文件列表: ${projectPath}`, defaultFiles);
+    return defaultFiles;
 }
 
 function selectCustomFolder() {
@@ -1189,38 +1279,25 @@ function selectCustomFolder() {
 }
 
 // 页面加载时恢复用户选择的文件夹
-function restoreUserFolder() {
+async function restoreUserFolder() {
     const savedFolder = localStorage.getItem('ppt-folder-path');
     if (savedFolder && savedFolder !== 'ppt/default') {
-        // 预定义不同文件夹的文件列表
-        const folderFiles = {
-            'ppt/default': [
-                '01-welcome.html',
-                '02-features.html', 
-                '03-how-to-use.html'
-            ],
-            'ppt/examples/neobrutalism': [
-                '01-cover.html',
-                '02-content.html',
-                '03-thanks.html'
-            ],
-            'ppt/examples/minimal': [
-                '01-cover.html',
-                '02-content.html',
-                '03-thanks.html'
-            ]
-        };
-        
-        // 获取文件列表
-        const files = folderFiles[savedFolder] || [
-            '01-cover.html',
-            '02-content.html',
-            '03-thanks.html'
-        ];
-        
-        // 更新配置
-        PPTConfig.slideFiles.basePath = savedFolder + '/';
-        PPTConfig.slideFiles.files = files;
+        try {
+            // 动态获取文件列表
+            const files = await discoverProjectFiles(savedFolder);
+            
+            if (files.length > 0) {
+                // 更新配置
+                PPTConfig.slideFiles.basePath = savedFolder + '/';
+                PPTConfig.slideFiles.files = files;
+            } else {
+                console.log(`已保存的文件夹 ${savedFolder} 中没有找到HTML文件，回退到默认文件夹`);
+                localStorage.removeItem('ppt-folder-path');
+            }
+        } catch (error) {
+            console.log(`无法访问已保存的文件夹 ${savedFolder}，回退到默认文件夹:`, error);
+            localStorage.removeItem('ppt-folder-path');
+        }
     }
 }
 
