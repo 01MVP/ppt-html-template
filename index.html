@@ -17,21 +17,7 @@
     <link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css">
 </head>
 <body>
-    <!-- 欢迎提示 -->
-    <div id="welcome-overlay" class="welcome-overlay">
-        <div class="welcome-content">
-            <h1>🎉 欢迎使用 HTML PPT 模板</h1>
-            <p>这是一个纯HTML的PPT演示模板，无需安装任何软件即可使用</p>
-            <div class="welcome-buttons">
-                <button class="btn-primary" onclick="startTutorial()">
-                    <i class="fas fa-play"></i> 开始教程
-                </button>
-                <button class="btn-secondary" onclick="closeWelcome()">
-                    <i class="fas fa-times"></i> 直接使用
-                </button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- 主要内容区域 -->
     <div class="ppt-container">
@@ -263,12 +249,6 @@
     <script>
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 检查是否首次访问
-            if (!localStorage.getItem('visited')) {
-                document.getElementById('welcome-overlay').style.display = 'flex';
-                localStorage.setItem('visited', 'true');
-            }
-            
             // 初始化PPT
             initializePPT();
             
@@ -281,4 +261,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
