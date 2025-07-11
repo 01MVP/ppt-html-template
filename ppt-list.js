@@ -1,5 +1,6 @@
 // PPT 项目配置文件
 // 创建新的 PPT 项目后，请在这里添加项目信息和文件列表
+// 注意：第一个项目将作为默认项目自动加载
 window.pptProjects = {
     'default': {
         name: '默认演示',
@@ -51,4 +52,4 @@ window.pptProjects = {
     //         '03-thanks.html'
     //     ]
     // }
-}; 
+};

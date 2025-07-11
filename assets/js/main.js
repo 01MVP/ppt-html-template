@@ -1113,34 +1113,50 @@ function selectCustomFolder() {
 
 // 页面加载时恢复用户选择的文件夹
 async function restoreUserFolder() {
+    // 首先检查是否有 pptProjects 配置
+    if (typeof window.pptProjects === 'undefined') {
+        console.error('未找到 ppt-list.js 配置文件，无法初始化项目');
+        return;
+    }
+    
     const savedFolder = localStorage.getItem('ppt-folder-path');
-    if (savedFolder && savedFolder !== 'ppt/default') {
+    
+    // 如果有保存的文件夹，尝试恢复
+    if (savedFolder) {
         try {
-            // 动态获取文件列表
-            const files = await discoverProjectFiles(savedFolder);
+            // 从路径中提取项目键
+            const projectKey = savedFolder.replace(/^ppt\//, '');
             
-            if (files.length > 0) {
-                // 更新配置
+            // 检查项目是否存在于配置中
+            if (window.pptProjects[projectKey]) {
+                const project = window.pptProjects[projectKey];
                 PPTConfig.slideFiles.basePath = savedFolder + '/';
-                PPTConfig.slideFiles.files = files;
-                return; // 成功加载保存的文件夹，直接返回
+                PPTConfig.slideFiles.files = project.files || [];
+                console.log(`已恢复保存的项目: ${project.name}`, project.files);
+                return;
             } else {
-                console.log(`已保存的文件夹 ${savedFolder} 中没有找到HTML文件，回退到默认文件夹`);
+                console.log(`已保存的项目 ${savedFolder} 在配置中不存在，回退到默认项目`);
                 localStorage.removeItem('ppt-folder-path');
             }
         } catch (error) {
-            console.log(`无法访问已保存的文件夹 ${savedFolder}，回退到默认文件夹:`, error);
+            console.log(`无法访问已保存的项目 ${savedFolder}，回退到默认项目:`, error);
             localStorage.removeItem('ppt-folder-path');
         }
     }
     
-    // 如果没有保存的文件夹或加载失败，使用默认项目
+    // 使用 pptProjects 中的第一个项目作为默认项目
     try {
-        const defaultFiles = await discoverProjectFiles('ppt/default');
-        if (defaultFiles.length > 0) {
-            PPTConfig.slideFiles.basePath = 'ppt/default/';
-            PPTConfig.slideFiles.files = defaultFiles;
-            console.log('已加载默认项目文件:', defaultFiles);
+        const projectKeys = Object.keys(window.pptProjects);
+        if (projectKeys.length > 0) {
+            const firstProjectKey = projectKeys[0];
+            const firstProject = window.pptProjects[firstProjectKey];
+            const projectPath = 'ppt/' + firstProjectKey;
+            
+            PPTConfig.slideFiles.basePath = projectPath + '/';
+            PPTConfig.slideFiles.files = firstProject.files || [];
+            console.log(`已加载默认项目: ${firstProject.name}`, firstProject.files);
+        } else {
+            console.error('pptProjects 配置为空，无法初始化项目');
         }
     } catch (error) {
         console.error('加载默认项目失败:', error);
@@ -1174,6 +1190,12 @@ window.selectCustomFolder = selectCustomFolder;
 window.loadPPTGallery = loadPPTGallery;
 window.createPPTCard = createPPTCard;
 window.showToast = showToast;
+window.toggleMainMenu = toggleMainMenu;
+window.closeMainMenu = closeMainMenu;
+window.showAbout = showAbout;
+window.closeAbout = closeAbout;
+window.openGithub = openGithub;
+window.setupModalClickOutside = setupModalClickOutside;
 
 // 侧边栏区域展开/收缩功能
 function toggleSidebarSection(sectionName) {
@@ -1197,12 +1219,84 @@ function toggleSidebarSection(sectionName) {
 
 // 初始化侧边栏区域状态
 function initializeSidebarSections() {
-    const sections = ['functions'];
-    sections.forEach(section => {
-        const sectionContent = document.getElementById(section + '-section');
-        if (sectionContent) {
-            // 默认展开功能面板
-            sectionContent.classList.add('expanded');
-        }
-    });
-} 
+    // 新的简化设计不需要展开/收缩功能
+    console.log('Sidebar sections initialized');
+}
+
+// 综合菜单功能
+function toggleMainMenu() {
+    const modal = document.getElementById('main-menu-modal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+function closeMainMenu() {
+    const modal = document.getElementById('main-menu-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// 点击模态框外部关闭菜单
+function setupModalClickOutside() {
+    // 主菜单模态框
+    const mainMenuModal = document.getElementById('main-menu-modal');
+    if (mainMenuModal) {
+        mainMenuModal.addEventListener('click', function(e) {
+            if (e.target === mainMenuModal) {
+                closeMainMenu();
+            }
+        });
+    }
+    
+    // 关于模态框
+    const aboutModal = document.getElementById('about-modal');
+    if (aboutModal) {
+        aboutModal.addEventListener('click', function(e) {
+            if (e.target === aboutModal) {
+                closeAbout();
+            }
+        });
+    }
+    
+    // 帮助模态框
+    const helpModal = document.getElementById('help-modal');
+    if (helpModal) {
+        helpModal.addEventListener('click', function(e) {
+            if (e.target === helpModal) {
+                closeHelp();
+            }
+        });
+    }
+    
+    // 文件夹选择模态框
+    const folderModal = document.getElementById('folder-selector-modal');
+    if (folderModal) {
+        folderModal.addEventListener('click', function(e) {
+            if (e.target === folderModal) {
+                closeFolderSelector();
+            }
+        });
+    }
+}
+
+// 关于弹窗功能
+function showAbout() {
+    const modal = document.getElementById('about-modal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+function closeAbout() {
+    const modal = document.getElementById('about-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// 打开 GitHub 项目链接
+function openGithub() {
+    window.open('https://github.com/01MVP/ppt-html-template', '_blank');
+}

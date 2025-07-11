@@ -11,12 +11,12 @@ const PPTConfig = {
     title: "HTML PPT 模板",
     
     // 作者信息
-    author: "Your Name",
+    author: "01MVP",
     
     // 幻灯片文件夹配置（动态从 ppt-list.js 加载）
     slideFiles: {
-        // PPT文件夹路径（由项目选择器动态设置）
-        basePath: "ppt/default/",
+        // PPT文件夹路径（初始化为null，由项目选择器动态设置）
+        basePath: null,
         
         // 文件排序方式：'name' | 'date' | 'custom'
         sortBy: 'name',
@@ -124,7 +124,7 @@ const PPTConfig = {
     changelog: [
         {
             version: "1.0.0",
-            date: "2024-01-01",
+            date: "2025-01-01",
             changes: [
                 "初始版本发布",
                 "支持三种主题风格",
@@ -142,4 +142,4 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 // 使配置在全局可用
-window.PPTConfig = PPTConfig; 
+window.PPTConfig = PPTConfig;

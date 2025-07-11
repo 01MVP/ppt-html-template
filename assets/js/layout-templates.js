@@ -264,7 +264,7 @@ class LayoutTemplates {
                         <div class="demo-timeline-content">事件</div>
                     </div>
                     <div class="demo-timeline-item">
-                        <div class="demo-timeline-date">2024</div>
+                        <div class="demo-timeline-date">2025</div>
                         <div class="demo-timeline-content">事件</div>
                     </div>
                 </div>
@@ -570,7 +570,7 @@ console.log(greeting); // 输出: Hello, Alice!
                             </div>
                         </div>
                         <div class="timeline-item">
-                            <div class="timeline-date">2024</div>
+                            <div class="timeline-date">2025</div>
                             <div class="timeline-content">
                                 <h3>持续优化</h3>
                                 <p>功能完善，用户反馈优化</p>

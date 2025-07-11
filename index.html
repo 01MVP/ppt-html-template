@@ -24,43 +24,27 @@
         <!-- 侧边栏导航 -->
         <nav class="sidebar open" id="sidebar">
             <div class="sidebar-header">
-                <h3>PPT 控制面板</h3>
-                <button class="sidebar-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-
-            
-            <!-- 功能按钮区域 -->
-            <div class="sidebar-functions">
-                <div class="sidebar-section-header" onclick="toggleSidebarSection('functions')">
-                    <h4>功能面板</h4>
-                    <i class="fas fa-chevron-down sidebar-section-arrow"></i>
-                </div>
-                <div class="sidebar-section-content" id="functions-section">
-                    <div class="function-buttons">
-                        <button class="sidebar-function-btn" onclick="showFolderSelector()" title="选择PPT文件夹">
+                <!-- 顶部工具栏 -->
+                <div class="header-toolbar">
+                    <button class="menu-toggle-btn" onclick="toggleMainMenu()" title="菜单">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <div class="quick-actions">
+                        <button class="quick-btn" onclick="showFolderSelector()" title="切换项目">
                             <i class="fas fa-folder-open"></i>
-                            <span>切换项目</span>
                         </button>
-                        <button class="sidebar-function-btn" onclick="showHelp()" title="帮助中心">
-                            <i class="fas fa-question-circle"></i>
-                            <span>帮助中心</span>
-                        </button>
-                        <button class="sidebar-function-btn" onclick="showPresentationTimer()" title="演示计时器 (Alt+T)">
-                            <i class="fas fa-clock"></i>
-                            <span>计时器</span>
-                        </button>
-                        <button class="sidebar-function-btn" onclick="toggleFullscreen()" title="全屏 (F11)">
+                        <button class="quick-btn" onclick="toggleFullscreen()" title="全屏">
                             <i class="fas fa-expand"></i>
-                            <span>全屏</span>
                         </button>
-                        <button class="sidebar-function-btn" onclick="exportToPDF()" title="导出PDF">
+                        <button class="quick-btn" onclick="exportToPDF()" title="导出PDF">
                             <i class="fas fa-file-pdf"></i>
-                            <span>导出PDF</span>
                         </button>
                     </div>
+                    
+                    <button class="sidebar-toggle" onclick="toggleSidebar()" title="关闭侧边栏">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
             
@@ -142,6 +126,59 @@
         </main>
     </div>
 
+    <!-- 综合菜单弹窗 -->
+    <div id="main-menu-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>菜单</h3>
+                <button class="modal-close" onclick="closeMainMenu()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="menu-section">
+                    <h4>快捷操作</h4>
+                    <div class="menu-items">
+                        <button class="menu-item" onclick="showFolderSelector(); closeMainMenu();">
+                            <i class="fas fa-folder-open"></i>
+                            <span>切换项目</span>
+                        </button>
+                        <button class="menu-item" onclick="showPresentationTimer(); closeMainMenu();">
+                            <i class="fas fa-clock"></i>
+                            <span>演示计时器</span>
+                        </button>
+                        <button class="menu-item" onclick="toggleFullscreen(); closeMainMenu();">
+                            <i class="fas fa-expand"></i>
+                            <span>全屏模式</span>
+                        </button>
+                        <button class="menu-item" onclick="exportToPDF(); closeMainMenu();">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>导出PDF</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>帮助与信息</h4>
+                    <div class="menu-items">
+                        <button class="menu-item" onclick="showHelp(); closeMainMenu();">
+                            <i class="fas fa-question-circle"></i>
+                            <span>快捷键说明</span>
+                        </button>
+                        <button class="menu-item" onclick="showAbout(); closeMainMenu();">
+                            <i class="fas fa-info-circle"></i>
+                            <span>关于</span>
+                        </button>
+                        <button class="menu-item" onclick="openGithub(); closeMainMenu();">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub 项目</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 帮助弹窗 -->
     <div id="help-modal" class="modal">
         <div class="modal-content">
@@ -183,6 +220,44 @@
                         <li>刷新浏览器，点击侧边栏顶部的文件夹按钮即可切换到你的演示文稿。</li>
                         <li>使用 <kbd>F11</kbd> 进入全屏模式，<kbd>Esc</kbd> 退出全屏。</li>
                     </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 关于弹窗 -->
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>关于 HTML PPT 模板</h3>
+                <button class="modal-close" onclick="closeAbout()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="about-content">
+                    <p><strong>HTML PPT 模板</strong> 是一个纯 HTML/CSS/JavaScript 的演示文稿解决方案。</p>
+                    
+                    <h4>特性</h4>
+                    <ul>
+                        <li>✨ 零依赖，纯前端实现</li>
+                        <li>🎨 响应式设计，支持多种设备</li>
+                        <li>⚡ 快速加载，流畅体验</li>
+                        <li>🔧 易于定制和扩展</li>
+                        <li>📱 支持触摸手势</li>
+                        <li>⌨️ 丰富的键盘快捷键</li>
+                    </ul>
+                    
+                    <h4>版本信息</h4>
+                    <p>版本：v1.0.0</p>
+                    <p>更新时间：2025年</p>
+                    
+                    <div class="about-links">
+                        <button class="link-btn" onclick="openGithub()">
+                            <i class="fab fa-github"></i>
+                            访问 GitHub 项目
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -251,6 +326,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 初始化PPT
             initializePPT();
+            
+            // 初始化模态框点击外部关闭功能
+            setupModalClickOutside();
             
             // 确保缩放控制器被初始化
             setTimeout(() => {
